@@ -1,7 +1,7 @@
 package br.com.pedrovieira.doetempo.api.auth
 
-import br.com.pedrovieira.doetempo.models.dto.AuthDTO
-import br.com.pedrovieira.doetempo.models.responses.LoginResponse
+import br.com.pedrovieira.doetempo.datastore.models.dto.AuthDTO
+import br.com.pedrovieira.doetempo.datastore.models.responses.LoginResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST

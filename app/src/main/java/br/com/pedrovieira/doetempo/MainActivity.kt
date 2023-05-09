@@ -1,166 +1,98 @@
 package br.com.pedrovieira.doetempo
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.content.SharedPreferences
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
-import br.com.pedrovieira.doetempo.api.auth.getToken
-import br.com.pedrovieira.doetempo.components.login_form.LoginFormDarkBg
-import br.com.pedrovieira.doetempo.components.login_form.LoginFormWhiteBg
-import br.com.pedrovieira.doetempo.models.dto.AuthDTO
-import br.com.pedrovieira.doetempo.screens.HomeActivity
+import androidx.navigation.compose.rememberNavController
+import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
+import br.com.pedrovieira.doetempo.components.BottomBar
+import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
+import br.com.pedrovieira.doetempo.datastore.models.responses.CampaignsResponse
+import br.com.pedrovieira.doetempo.navigation.ItemsMenu
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlin.jvm.internal.Intrinsics.Kotlin
-import kotlin.reflect.typeOf
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var campaigns by remember {
+                mutableStateOf(listOf(Campaign()))
+            }
+
+            val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
+
+            call.enqueue(object: Callback<CampaignsResponse> {
+                override fun onResponse(
+                    call: Call<CampaignsResponse>,
+                    response: Response<CampaignsResponse>
+                ) {
+                    Log.i("ds3m", response.body().toString())
+                    if (response.isSuccessful) {
+                        campaigns = response.body()?.campaigns as List<Campaign>
+                    }
+                }
+
+                override fun onFailure(call: Call<CampaignsResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
             DoeTempoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    Home()
+                    BottomMenuNavigation(campaigns)
                 }
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Home() {
-    val context = LocalContext.current
-
-    var emailState by remember {
-        mutableStateOf("")
-    }
-
-    var passwordState by remember {
-        mutableStateOf("")
-    }
-
-
-    Column(
-        Modifier
-            .fillMaxSize()
-            .paint(
-                painter = painterResource(id = R.drawable.bg_main_home),
-                alignment = Alignment.BottomCenter,
-            )
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+fun BottomMenuNavigation(campaigs: List<Campaign>) {
+    val navController = rememberNavController()
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    val navigationItem = listOf(
+        ItemsMenu.Campaign,
+        ItemsMenu.User,
+        ItemsMenu.Feed
     )
-    {
-        Image(
-            painter = painterResource(id = R.drawable.logo_doe_tempo), 
-            contentDescription = "Logo DoeTempo", 
-            contentScale = ContentScale.FillWidth
-        )
 
-        if(!isSystemInDarkTheme()) {
-            LoginFormWhiteBg(
-                emailState = emailState,
-                onEmailChange = { emailState = it},
-                passwordState = passwordState,
-                onPasswordChange = { passwordState = it}
-            )
-        } else {
-            LoginFormDarkBg(
-                emailState = emailState,
-                onEmailChange = {emailState = it},
-                passwordState = passwordState,
-                onPasswordChange = {passwordState = it}
-            )
-        }
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            Arrangement.Center,
-            Alignment.CenterHorizontally
-        ) {
-            Button(
-                onClick = { handleButtonClick(context, emailState, passwordState)},
-                Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface),
-                shape = RoundedCornerShape(30.dp)
-            ) {
-                Text(
-                    text = "Entrar",
-                    Modifier.padding(8.dp),
-                    style = MaterialTheme.typography.button,
-                    color = MaterialTheme.colors.primary
-                )
-            }
-            Spacer(modifier = Modifier.size(20.dp))
-            
-            Text(text = "Ainda não possui uma conta?")
-            Text(text = "Registre-se aqui!", Modifier.clickable {
-                Toast.makeText(
-                    context,
-                    "Testee",
-                    Toast.LENGTH_SHORT
-                ).show() },
-                color = MaterialTheme.colors.onSurface
-            )
-        }
-        
-    }
-}
-
-fun handleButtonClick(context: Context, email: String, password: String) {
-    val authBody = AuthDTO(email, password)
-
-    val data = getToken(context, authBody) {
-       it
-    }.toString()
-
-    if(!context.getSharedPreferences("app_data", MODE_PRIVATE).getString("token", "").isNullOrEmpty()) {
-        if(data === "USER"){
-            val intent = Intent(context, HomeActivity::class.java)
-            startActivity(context, intent, null)
-        } else{
-            Toast.makeText(context, "é ong", Toast.LENGTH_SHORT).show()
-        }
+    Scaffold(
+        scaffoldState = scaffoldState,
+        bottomBar = { BottomBar(navController, menuItems = navigationItem) },
+    ) {
+        NavigationHost(navController = navController, campaigns = campaigs)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun GreetingPreview4() {
     DoeTempoTheme {
-        Home()
+        BottomMenuNavigation(campaigs = listOf(Campaign()))
     }
 }

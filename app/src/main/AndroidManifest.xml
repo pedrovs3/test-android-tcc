@@ -2,23 +2,44 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_doe_tempo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.DoeTempo"
         tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.DoeTempo" />
+        <activity
+            android:name=".screens.FeedActivity"
+            android:exported="false"
+            android:label="@string/title_activity_feed"
+            android:theme="@style/Theme.DoeTempo" />
+        <activity
+            android:name=".screens.PerfilActivity"
+            android:exported="false"
+            android:label="@string/title_activity_perfil"
+            android:theme="@style/Theme.DoeTempo" />
+        <activity
+            android:name=".screens.CampaignDetailsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_campaign_details"
+            android:theme="@style/Theme.DoeTempo" />
         <activity
             android:name=".screens.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.DoeTempo" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DoeTempo">
