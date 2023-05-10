@@ -44,6 +44,6 @@ fun DoeTempoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
         colors = colors,
         typography = Typography,
         shapes = Shapes,
-        content = content
+        content = content,
     )
 }

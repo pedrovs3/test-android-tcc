@@ -71,9 +71,8 @@ class CampaignDetailsActivity : ComponentActivity() {
 
 @Composable
 fun CampaignDetails(campaign: Campaign) {
-    val navController = rememberNavController()
     Column(Modifier.fillMaxSize()) {
-        TopBar(campaign.title, navController)
+        TopBar(campaign.title)
         Text(
             text = "Hello ${campaign.title}!",
             modifier = Modifier.fillMaxWidth()

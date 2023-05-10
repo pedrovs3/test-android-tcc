@@ -31,7 +31,7 @@ import br.com.pedrovieira.doetempo.screens.CampaignDetailsActivity
 import br.com.pedrovieira.doetempo.screens.HomeCampaigns
 
 @Composable
-fun TopBar(title: String?, navController: NavController) {
+fun TopBar(title: String?) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
@@ -40,7 +40,7 @@ fun TopBar(title: String?, navController: NavController) {
                     if (title != null) {
                         Row(
                             Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(text = title)
@@ -48,7 +48,7 @@ fun TopBar(title: String?, navController: NavController) {
                     } else {
                         Row(
                             Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(text = "null")
