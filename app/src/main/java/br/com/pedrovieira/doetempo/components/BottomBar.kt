@@ -31,7 +31,6 @@ fun BottomBar(
                 BottomNavigationItem(
                     selected = currentRoute == item.route,
                     onClick = {
-                        Log.i("destination OnClick", item.route.toString())
                         navController.navigate(item.route)
                               },
                     icon = {

@@ -1,5 +1,6 @@
 package br.com.pedrovieira.doetempo.screens
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -18,7 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.components.top_bar.TopBar
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
@@ -67,8 +71,9 @@ class CampaignDetailsActivity : ComponentActivity() {
 
 @Composable
 fun CampaignDetails(campaign: Campaign) {
+    val navController = rememberNavController()
     Column(Modifier.fillMaxSize()) {
-        TopBar(campaign.title)
+        TopBar(campaign.title, navController)
         Text(
             text = "Hello ${campaign.title}!",
             modifier = Modifier.fillMaxWidth()

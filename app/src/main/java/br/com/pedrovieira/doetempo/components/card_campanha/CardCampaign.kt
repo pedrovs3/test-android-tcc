@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.NavController
 import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.screens.CampaignDetailsActivity
@@ -100,7 +101,6 @@ fun CardCampaign(context: Context, campaign: Campaign) {
                         color = MaterialTheme.colors.primary
                     )
                 }
-
             }
             Column(Modifier.padding(start = 5.dp, bottom = 10.dp), verticalArrangement = Arrangement.Center) {
                 Text(text = "Sobre:", color = MaterialTheme.colors.primary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
