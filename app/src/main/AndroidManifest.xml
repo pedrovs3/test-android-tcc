@@ -39,7 +39,7 @@
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.DoeTempo" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".screens.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DoeTempo">

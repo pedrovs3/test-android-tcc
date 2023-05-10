@@ -58,7 +58,7 @@ fun CardCampaign(context: Context, campaign: Campaign) {
 
     imageLink = campaign.ngo?.photoURL.toString()
     Card(onClick = {
-        var intent = Intent(context, CampaignDetailsActivity::class.java)
+        val intent = Intent(context, CampaignDetailsActivity::class.java)
         intent.putExtra("id_campaign", campaign.id)
         startActivity(context, intent, null)
     },

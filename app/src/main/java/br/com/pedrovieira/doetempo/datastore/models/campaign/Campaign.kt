@@ -21,5 +21,9 @@ data class Campaign (
     @SerializedName("campaign_causes")
     val campaignCauses: List<CampaignCause>? = null,
     @SerializedName("campaign_address")
-    val campaignAddress: Address? = null
+    val campaignAddress: Address? = null,
+    @SerializedName("campaign_photos")
+    val campaignPhotos: List<CampaignPhoto>? = null,
+    @SerializedName("campaign_participants")
+    val campaignParticipants: List<CampaignParticipant>? = null,
 )

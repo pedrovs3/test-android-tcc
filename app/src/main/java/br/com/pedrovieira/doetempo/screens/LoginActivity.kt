@@ -1,4 +1,4 @@
-package br.com.pedrovieira.doetempo
+package br.com.pedrovieira.doetempo.screens
 
 import android.content.Intent
 import android.os.Bundle
@@ -39,6 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import br.com.pedrovieira.doetempo.MainActivity
+import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.components.login_form.LoginFormDarkBg
 import br.com.pedrovieira.doetempo.components.login_form.LoginFormWhiteBg
@@ -134,7 +136,7 @@ fun Home(token: String, buttonState: ButtonState) {
     )
     {
         Image(
-            painter = painterResource(id = R.drawable.logo_doe_tempo), 
+            painter = painterResource(id = R.drawable.logo_doe_tempo),
             contentDescription = "Logo DoeTempo", 
             contentScale = ContentScale.FillWidth
         )

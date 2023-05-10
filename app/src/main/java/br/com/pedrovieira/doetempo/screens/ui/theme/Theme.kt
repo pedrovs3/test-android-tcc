@@ -14,17 +14,21 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import br.com.pedrovieira.doetempo.ui.theme.BlueBerry
+import br.com.pedrovieira.doetempo.ui.theme.MayaBlue
+import br.com.pedrovieira.doetempo.ui.theme.TuftsBlue
+import br.com.pedrovieira.doetempo.ui.theme.Turquouise_700
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = BlueBerry,
+    secondary = MayaBlue,
+    tertiary = Turquouise_700
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = BlueBerry,
+    secondary = MayaBlue,
+    tertiary = TuftsBlue
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
