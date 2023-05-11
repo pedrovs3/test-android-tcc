@@ -6,8 +6,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
@@ -71,8 +74,9 @@ class CampaignDetailsActivity : ComponentActivity() {
 
 @Composable
 fun CampaignDetails(campaign: Campaign) {
+    TopBar(campaign.title)
     Column(Modifier.fillMaxSize()) {
-        TopBar(campaign.title)
+        Spacer(modifier = Modifier.height(55.dp))
         Text(
             text = "Hello ${campaign.title}!",
             modifier = Modifier.fillMaxWidth()

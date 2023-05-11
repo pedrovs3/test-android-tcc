@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -43,7 +44,7 @@ fun TopBar(title: String?) {
                                 .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(text = title)
+                            Text(text = title, modifier = Modifier.padding(10.dp))
                         }
                     } else {
                         Row(
