@@ -2,11 +2,16 @@ package br.com.pedrovieira.doetempo.components.top_bar
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.OverscrollEffect
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -44,7 +49,7 @@ fun TopBar(title: String?) {
                                 .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(text = title, modifier = Modifier.padding(10.dp))
+                            Text(text = title, modifier = Modifier.padding(10.dp).verticalScroll(state = ScrollState(0)))
                         }
                     } else {
                         Row(
@@ -64,7 +69,7 @@ fun TopBar(title: String?) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "voltar")
                     }
                 },
-                backgroundColor = Color(0xFF305BE5),
+                backgroundColor = MaterialTheme.colors.secondaryVariant,
                 contentColor = Color.White,
                 elevation = 0.dp,
                 actions = {

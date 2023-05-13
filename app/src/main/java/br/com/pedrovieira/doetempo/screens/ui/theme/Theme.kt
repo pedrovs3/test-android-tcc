@@ -1,34 +1,31 @@
 package br.com.pedrovieira.doetempo.screens.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.compose.ui.graphics.Color
 import br.com.pedrovieira.doetempo.ui.theme.BlueBerry
 import br.com.pedrovieira.doetempo.ui.theme.MayaBlue
+import br.com.pedrovieira.doetempo.ui.theme.Shapes
 import br.com.pedrovieira.doetempo.ui.theme.TuftsBlue
 import br.com.pedrovieira.doetempo.ui.theme.Turquouise_700
 
 private val DarkColorScheme = darkColorScheme(
     primary = BlueBerry,
     secondary = MayaBlue,
-    tertiary = Turquouise_700
+    tertiary = Turquouise_700,
+    outline = MorningBlue
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = BlueBerry,
     secondary = MayaBlue,
-    tertiary = TuftsBlue
+    tertiary = TuftsBlue,
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -41,34 +38,37 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+private val DarkColorPalette = darkColors(
+    primary = BlueBerry,
+    primaryVariant = TuftsBlue,
+    secondary = MayaBlue,
+    onSurface = Turquouise_700,
+    background = Color(0xFF1c1c1e),
+    secondaryVariant = MorningBlue
+)
+
+private val LightColorPalette = lightColors(
+    primary = BlueBerry,
+    primaryVariant = TuftsBlue,
+    secondary = MayaBlue,
+    onSurface = Turquouise_700,
+    background = Color(0xFFFBFBFD),
+    secondaryVariant = MorningBlue
+)
+
+
 @Composable
-fun DoeTempoTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
+fun DoeTempoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+    androidx.compose.material.MaterialTheme(
+        colors = colors,
+        typography = br.com.pedrovieira.doetempo.ui.theme.Typography,
+        shapes = Shapes,
+        content = content,
     )
 }

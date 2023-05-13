@@ -5,4 +5,6 @@
     <string name="title_activity_perfil">PerfilActivity</string>
     <string name="title_activity_feed">FeedActivity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_teste">TesteActivity</string>
+    <string name="title_activity_type_selection">TypeSelectionActivity</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.NavController
 import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.screens.CampaignDetailsActivity
@@ -74,23 +75,32 @@ fun CardCampaign(context: Context, campaign: Campaign) {
                 Modifier
                     .fillMaxWidth()
                     .padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
-                    AsyncImage(
-                        model = imageLink,
-                        imageLoader = imageLoader,
-                        placeholder = painterResource(id = R.drawable.logo_doe_tempo),
-                        contentDescription = "Imagem da ong responsavel pela campanha.",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .size(45.dp, 45.dp)
-                            .padding(end = 5.dp)
-                            .border(
-                                border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(3.dp),
-                        onError = { isLoading = false },
-                        onSuccess = { isLoading = false},
-                    )
+                    Box(Modifier
+                        .clip(shape = RoundedCornerShape(
+                            topStart = 10.dp,
+                            topEnd = 10.dp,
+                            bottomStart = 10.dp,
+                            bottomEnd = 10.dp)
+                        )
+                        .padding(end = 5.dp)
+                        .border(
+                            border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(3.dp),) {
+                        AsyncImage(
+                            model = imageLink,
+                            contentDescription = "Imagem da ong responsavel pela campanha.",
+                            imageLoader = imageLoader,
+                            modifier = Modifier
+                                .size(45.dp, 45.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            placeholder = painterResource(id = R.drawable.logo_doe_tempo),
+                            contentScale = ContentScale.Crop,
+                            onError = { isLoading = false },
+                            onSuccess = { isLoading = false},
+                        )
+                    }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Top) {
                     Text(
                         text = campaign.title.toString(),
@@ -104,7 +114,9 @@ fun CardCampaign(context: Context, campaign: Campaign) {
             }
             Column(Modifier.padding(start = 5.dp, bottom = 10.dp), verticalArrangement = Arrangement.Center) {
                 Text(text = "Sobre:", color = MaterialTheme.colors.primary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = campaign.description.toString(), Modifier.padding(start = 2.dp), color = Color(0xFF888888), fontSize = 14.sp)
+                Text(text = campaign.description.toString(), Modifier.padding(start = 2.dp), color = Color(
+                    0xFF7D7D80
+                ), fontSize = 14.sp)
             }
         }
     }

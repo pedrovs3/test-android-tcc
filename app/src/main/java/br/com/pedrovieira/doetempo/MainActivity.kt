@@ -36,35 +36,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var campaigns by remember {
-                mutableStateOf(listOf(Campaign()))
-            }
-
-            val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
-
-            call.enqueue(object: Callback<CampaignsResponse> {
-                override fun onResponse(
-                    call: Call<CampaignsResponse>,
-                    response: Response<CampaignsResponse>
-                ) {
-                    Log.i("ds3m", response.body().toString())
-                    if (response.isSuccessful) {
-                        campaigns = response.body()?.campaigns as List<Campaign>
-                    }
-                }
-
-                override fun onFailure(call: Call<CampaignsResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
-
-            })
             DoeTempoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BottomMenuNavigation(campaigns)
+                    BottomMenuNavigation()
                 }
             }
         }
@@ -73,7 +51,29 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomMenuNavigation(campaigs: List<Campaign>) {
+fun BottomMenuNavigation() {
+    var campaigns by remember {
+        mutableStateOf(listOf(Campaign()))
+    }
+
+    val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
+
+    call.enqueue(object: Callback<CampaignsResponse> {
+        override fun onResponse(
+            call: Call<CampaignsResponse>,
+            response: Response<CampaignsResponse>
+        ) {
+            Log.i("ds3m", response.body().toString())
+            if (response.isSuccessful) {
+                campaigns = response.body()?.campaigns as List<Campaign>
+            }
+        }
+
+        override fun onFailure(call: Call<CampaignsResponse>, t: Throwable) {
+            TODO("Not yet implemented")
+        }
+
+    })
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -87,7 +87,7 @@ fun BottomMenuNavigation(campaigs: List<Campaign>) {
         scaffoldState = scaffoldState,
         bottomBar = { BottomBar(navController, menuItems = navigationItem) },
     ) {
-        NavigationHost(navController = navController, campaigns = campaigs)
+        NavigationHost(navController = navController, campaigns = campaigns)
     }
 }
 
@@ -95,6 +95,6 @@ fun BottomMenuNavigation(campaigs: List<Campaign>) {
 @Composable
 fun GreetingPreview4() {
     DoeTempoTheme {
-        BottomMenuNavigation(campaigs = listOf(Campaign()))
+        BottomMenuNavigation()
     }
 }

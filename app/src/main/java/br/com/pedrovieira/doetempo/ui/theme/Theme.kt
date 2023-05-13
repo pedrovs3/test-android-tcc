@@ -7,13 +7,15 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import br.com.pedrovieira.doetempo.screens.ui.theme.MorningBlue
 
 private val DarkColorPalette = darkColors(
     primary = BlueBerry,
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFF1c1c1e)
+    background = Color(0xFF1c1c1e),
+    secondaryVariant = MorningBlue
 )
 
 private val LightColorPalette = lightColors(
@@ -21,8 +23,9 @@ private val LightColorPalette = lightColors(
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFFFBFBFD)
-
+    background = Color(0xFFFBFBFD),
+    secondaryVariant = MorningBlue
+)
     /* Other default colors to override
     surface = Color.White,
     onPrimary = Color.White,
@@ -30,8 +33,6 @@ private val LightColorPalette = lightColors(
     onBackground = Color.Black,
     onSurface = Color.Black,
     */
-)
-
 @Composable
 fun DoeTempoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {

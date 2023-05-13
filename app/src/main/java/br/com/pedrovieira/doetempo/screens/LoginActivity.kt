@@ -228,11 +228,9 @@ fun Home(token: String, buttonState: ButtonState) {
             
             Text(text = "Ainda não possui uma conta?")
             Text(text = "Registre-se aqui!", Modifier.clickable {
-                Toast.makeText(
-                    context,
-                    "Testee",
-                    Toast.LENGTH_SHORT
-                ).show() },
+                val intent = Intent(context, TypeSelectionActivity::class.java)
+                startActivity(context, intent, null)
+                 },
                 color = MaterialTheme.colors.onSurface
             )
         }

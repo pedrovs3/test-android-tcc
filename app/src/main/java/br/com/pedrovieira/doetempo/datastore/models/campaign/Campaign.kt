@@ -3,6 +3,7 @@ package br.com.pedrovieira.doetempo.datastore.models.campaign
 import br.com.pedrovieira.doetempo.datastore.models.Address
 import br.com.pedrovieira.doetempo.datastore.models.Ngo
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDate
 
 data class Campaign (
     val id: String? = null,
