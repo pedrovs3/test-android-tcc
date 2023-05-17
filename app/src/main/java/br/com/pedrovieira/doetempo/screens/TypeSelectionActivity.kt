@@ -1,5 +1,6 @@
 package br.com.pedrovieira.doetempo.screens
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -62,6 +64,8 @@ fun Greeting() {
         mutableStateOf(false)
     }
 
+    val context = LocalContext.current
+
     Handler().postDelayed({
           animateState = true
     }, 200)
@@ -76,21 +80,24 @@ fun Greeting() {
                 ),
             Arrangement.SpaceBetween
         ) {
-            AnimatedVisibility(visible = animateState, enter = fadeIn(initialAlpha = 0.0f, animationSpec = tween(1000))) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_doe_tempo),
-                        contentDescription = "Logo da plataforma",
-                        alignment = Alignment.Center
-                    )
-                }
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_doe_tempo),
+                    contentDescription = "Logo da plataforma",
+                    alignment = Alignment.Center
+                )
             }
             Column(
                 Modifier
                     .fillMaxHeight(0.7f)
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Button(onClick = { /*TODO*/ }, Modifier.fillMaxWidth(),
+                Button(
+                    onClick = {
+                        val intent = Intent(context, RegisterUserActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                    Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface)
                 ) {
                     Text(text = "Sou uma Ong",

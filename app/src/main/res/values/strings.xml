@@ -7,4 +7,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_teste">TesteActivity</string>
     <string name="title_activity_type_selection">TypeSelectionActivity</string>
+    <string name="title_activity_register_user">RegisterUserActivity</string>
+    <string name="title_activity_complete_register_user">CompleteRegisterUserActivity</string>
 </resources>
