@@ -9,10 +9,10 @@ import br.com.pedrovieira.doetempo.navigation.ItemsMenu.Feed
 import br.com.pedrovieira.doetempo.navigation.ItemsMenu.User
 import br.com.pedrovieira.doetempo.screens.FeedActivity
 import br.com.pedrovieira.doetempo.screens.HomeCampaigns
-import br.com.pedrovieira.doetempo.screens.PerfilActivity
+import br.com.pedrovieira.doetempo.screens.PerfilScreen
 
 @Composable
-fun NavigationHost(navController: NavHostController, campaigns: List<br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign>) {
+fun NavigationHost(navController: NavHostController, campaigns: List<br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign>, idUser: String) {
     NavHost(
         navController = navController,
         startDestination = Campaign.route
@@ -21,7 +21,7 @@ fun NavigationHost(navController: NavHostController, campaigns: List<br.com.pedr
             HomeCampaigns(campaigns)
         }
         composable(User.route) {
-            PerfilActivity()
+            PerfilScreen(idUser)
         }
         composable(Feed.route) {
             FeedActivity()

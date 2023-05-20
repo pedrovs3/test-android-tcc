@@ -32,7 +32,7 @@ fun BottomBar(
                     selected = currentRoute == item.route,
                     onClick = {
                         navController.navigate(item.route)
-                              },
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(id = item.icon),

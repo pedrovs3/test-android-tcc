@@ -31,6 +31,11 @@
             android:label="@string/title_activity_complete_register_ong"
             android:theme="@style/Theme.DoeTempo" />
         <activity
+            android:name=".screens.PerfilActivity"
+            android:exported="false"
+            android:label="@string/title_activity_perfil"
+            android:theme="@style/Theme.DoeTempo" />
+        <activity
             android:name=".screens.RegisterOngActivity"
             android:exported="false"
             android:label="@string/title_activity_register_ong"

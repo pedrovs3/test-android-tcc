@@ -1,7 +1,7 @@
 package br.com.pedrovieira.doetempo.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import br.com.pedrovieira.doetempo.components.card_campanha.CardCampaign
 import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
@@ -40,7 +39,6 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
     var nameUser by remember {
         mutableStateOf("")
     }
-
     val context = LocalContext.current
     val dataStore = DataStoreAppData(context = context)
     nameUser = dataStore.getName.collectAsState(initial = "").value.toString()
@@ -61,7 +59,10 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Olá $nameUser!", fontSize = 18.sp)
-            IconButton(onClick = { /*TODO*/ }, ) {
+            IconButton(onClick = {
+                val intent = Intent(context, PerfilActivity::class.java)
+                context.startActivity(intent)
+            }) {
                 Icon(imageVector = Icons.Default.Settings, contentDescription = "Button for settings")
             }
         }
