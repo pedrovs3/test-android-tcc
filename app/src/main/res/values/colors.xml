@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="blueberry">#FF4F79FE</color>
+    <color name="background">#FFFBFBFD</color>
 </resources>

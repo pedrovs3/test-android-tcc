@@ -3,6 +3,7 @@ package br.com.pedrovieira.doetempo.api
 import br.com.pedrovieira.doetempo.api.auth.AuthRetrofitService
 import br.com.pedrovieira.doetempo.api.campaign.CampaignRetrofitService
 import br.com.pedrovieira.doetempo.api.genders.GendersRetrofitService
+import br.com.pedrovieira.doetempo.api.ngo.NgoRetrofitService
 import br.com.pedrovieira.doetempo.api.user.UserRetrofitService
 import br.com.pedrovieira.doetempo.constants.Constants
 import retrofit2.Retrofit
@@ -41,6 +42,10 @@ class RetrofitApiDoeTempo {
         fun retrofitUserServices(): UserRetrofitService {
             instance = getRetrofit()
             return instance.create(UserRetrofitService::class.java)
+        }
+        fun retrofitNgoServices(): NgoRetrofitService {
+            instance = getRetrofit()
+            return instance.create(NgoRetrofitService::class.java)
         }
     }
 }

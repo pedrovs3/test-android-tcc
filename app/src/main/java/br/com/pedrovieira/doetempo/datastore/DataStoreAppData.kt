@@ -16,7 +16,7 @@ class DataStoreAppData(private val context: Context) {
     // Uma unica instancia
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("appData")
-        val TOKEN_JWT = stringPreferencesKey("token")
+        val TOKEN = stringPreferencesKey("auth_token")
         val ID_USER = stringPreferencesKey("id_user")
         val TYPE = stringPreferencesKey("type_user")
         val NAME_USER = stringPreferencesKey("name_user")
@@ -29,7 +29,7 @@ class DataStoreAppData(private val context: Context) {
 
     // Pegar o token
     val getToken: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[TOKEN_JWT] ?: ""
+        preferences[TOKEN] ?: ""
     }
 
     val getGenderRegister: Flow<String?> = context.dataStore.data.map { preferences ->
@@ -94,7 +94,7 @@ class DataStoreAppData(private val context: Context) {
     // Salvar o token no dataStore
     suspend fun saveToken(token: String) {
         context.dataStore.edit { preferences ->
-            preferences[TOKEN_JWT] = token
+            preferences[TOKEN] = token
         }
     }
 
@@ -112,7 +112,7 @@ class DataStoreAppData(private val context: Context) {
 
     suspend fun deleteToken() {
         context.dataStore.edit { preferences ->
-            preferences.remove(TOKEN_JWT)
+            preferences.remove(TOKEN)
         }
     }
 }

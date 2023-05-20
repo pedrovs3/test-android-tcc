@@ -1,4 +1,4 @@
-package br.com.pedrovieira.doetempo.models
+package br.com.pedrovieira.doetempo.models.responses
 
 import br.com.pedrovieira.doetempo.datastore.models.User
 

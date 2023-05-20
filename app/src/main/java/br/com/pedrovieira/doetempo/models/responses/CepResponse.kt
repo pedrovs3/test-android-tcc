@@ -1,4 +1,4 @@
-package br.com.pedrovieira.doetempo.models
+package br.com.pedrovieira.doetempo.models.responses
 
 data class CepResponse(
     val cep: String? = null,

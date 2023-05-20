@@ -2,6 +2,7 @@ package br.com.pedrovieira.doetempo.screens
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -42,31 +43,28 @@ import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.api.viacep.RetrofitApiViaCep
 import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
-import br.com.pedrovieira.doetempo.datastore.models.UserCreate
 import br.com.pedrovieira.doetempo.datastore.models.dto.AddressDTO
 import br.com.pedrovieira.doetempo.models.responses.CepResponse
+import br.com.pedrovieira.doetempo.models.responses.CreateNgo
+import br.com.pedrovieira.doetempo.models.responses.OngCreatedResponse
 import br.com.pedrovieira.doetempo.models.responses.UserCreatedResponse
 import br.com.pedrovieira.doetempo.screens.ui.theme.DoeTempoTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.log
 
-class CompleteRegisterUserActivity : ComponentActivity() {
+class CompleteRegisterOngActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val dataStore = DataStoreAppData(this)
-            var gender = this.intent.getStringExtra("gender")
-            if (gender.isNullOrEmpty()) {
-                gender = ""
-            }
             DoeTempoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CompleteRegisterUser(dataStore, gender)
+                    CompleteRegisterOng(datastore = DataStoreAppData(this))
                 }
             }
         }
@@ -74,8 +72,8 @@ class CompleteRegisterUserActivity : ComponentActivity() {
 }
 
 @Composable
-fun CompleteRegisterUser(datastore: DataStoreAppData, gender: String) {
-    var cpfState by remember {
+fun CompleteRegisterOng(datastore: DataStoreAppData) {
+    var cnpjState by remember {
         mutableStateOf("")
     }
     var cepState by remember {
@@ -133,8 +131,8 @@ fun CompleteRegisterUser(datastore: DataStoreAppData, gender: String) {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             OutlinedTextField(
-                value = cpfState,
-                onValueChange = { cpfState = it },
+                value = cnpjState,
+                onValueChange = { cnpjState = it },
                 Modifier.fillMaxWidth(),
                 label = { Text(text = "CPF", color = Color.White) },
                 shape = RoundedCornerShape(20.dp),
@@ -252,31 +250,36 @@ fun CompleteRegisterUser(datastore: DataStoreAppData, gender: String) {
                 Column(Modifier.fillMaxHeight().fillMaxWidth(), verticalArrangement = Arrangement.Bottom) {
                     Button(
                         onClick = {
-                            val user = UserCreate(
+                            val ong = CreateNgo(
                                 name = nameUser,
-                                email = emailUser,
-                                password,
                                 address = AddressDTO(postalCode = cepState, number = numberState),
-                                birthdate = birthDate,
-                                cpf = cpfState,
-                                gender = gender
+                                email = emailUser,
+                                cnpj = cnpjState,
+                                foundationDate = birthDate,
+                                password = password
                             )
 
-                            val registerUserCall = RetrofitApiDoeTempo.retrofitUserServices().saveUser(user)
-                            registerUserCall.enqueue(object : Callback<UserCreatedResponse> {
+                            val registerOngCall = RetrofitApiDoeTempo.retrofitNgoServices().saveOng(ong)
+                            registerOngCall.enqueue(object : Callback<OngCreatedResponse>{
                                 override fun onResponse(
-                                    call: Call<UserCreatedResponse>,
-                                    response: Response<UserCreatedResponse>
+                                    call: Call<OngCreatedResponse>,
+                                    response: Response<OngCreatedResponse>
                                 ) {
                                     if(response.isSuccessful) {
-                                        Toast.makeText(context, "Usuário criado com sucesso", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "Ong cadastrada com sucesso", Toast.LENGTH_SHORT).show()
                                         val intent = Intent(context, LoginActivity::class.java)
                                         context.startActivity(intent)
                                         Log.i("created", response.body().toString())
                                     }
+                                    Log.i("teste", response.body().toString())
+                                    Log.i("teste", response.code().toString())
+                                    Log.i("teste", response.message().toString())
                                 }
 
-                                override fun onFailure(call: Call<UserCreatedResponse>, t: Throwable) {
+                                override fun onFailure(
+                                    call: Call<OngCreatedResponse>,
+                                    t: Throwable
+                                ) {
                                     TODO("Not yet implemented")
                                 }
                             })
@@ -300,8 +303,8 @@ fun CompleteRegisterUser(datastore: DataStoreAppData, gender: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview7() {
+fun GreetingPreview9() {
     DoeTempoTheme {
-        CompleteRegisterUser(datastore = DataStoreAppData(context = LocalContext.current), gender = "")
+        CompleteRegisterOng(datastore = DataStoreAppData(context = LocalContext.current))
     }
 }

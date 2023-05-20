@@ -71,7 +71,6 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
                 .padding(bottom = 45.dp),
         ) {
             LazyColumn(Modifier.fillMaxSize()) {
-                Log.i("testee", campaigns.toString())
                 items(campaigns) {
                     CardCampaign(context = context, campaign = it)
                 }

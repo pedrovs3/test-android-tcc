@@ -1,6 +1,6 @@
 package br.com.pedrovieira.doetempo.api.viacep
 
-import br.com.pedrovieira.doetempo.models.CepResponse
+import br.com.pedrovieira.doetempo.models.responses.CepResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

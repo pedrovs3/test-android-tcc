@@ -94,7 +94,7 @@ fun Greeting() {
                     .padding(horizontal = 20.dp),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     onClick = {
-                        val intent = Intent(context, RegisterUserActivity::class.java)
+                        val intent = Intent(context, RegisterOngActivity::class.java)
                         context.startActivity(intent)
                     },
                     Modifier.fillMaxWidth(),
@@ -110,7 +110,10 @@ fun Greeting() {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Button(onClick = { /*TODO*/ },
+                Button(onClick = {
+                    val intent = Intent(context, RegisterUserActivity::class.java)
+                    context.startActivity(intent)
+                },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface)
                 ) {

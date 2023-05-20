@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,14 +21,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.components.BottomBar
+import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.datastore.models.responses.CampaignsResponse
 import br.com.pedrovieira.doetempo.navigation.ItemsMenu
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,7 +59,6 @@ fun BottomMenuNavigation() {
     var campaigns by remember {
         mutableStateOf(listOf(Campaign()))
     }
-
     val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
 
     call.enqueue(object: Callback<CampaignsResponse> {

@@ -1,4 +1,4 @@
-package br.com.pedrovieira.doetempo.models
+package br.com.pedrovieira.doetempo.models.payload
 
 import com.google.gson.annotations.SerializedName
 

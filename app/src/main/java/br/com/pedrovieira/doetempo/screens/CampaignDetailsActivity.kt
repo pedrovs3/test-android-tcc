@@ -2,6 +2,8 @@ package br.com.pedrovieira.doetempo.screens
 
 import android.os.Bundle
 import android.util.Log
+
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -25,11 +27,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,12 +53,15 @@ import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.api.viacep.RetrofitApiViaCep
 import br.com.pedrovieira.doetempo.components.top_bar.TopBar
+import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.datastore.models.campaign.CampaignCause
 import br.com.pedrovieira.doetempo.datastore.models.campaign.CampaignPhoto
+import br.com.pedrovieira.doetempo.datastore.models.enums.ButtonState
 import br.com.pedrovieira.doetempo.helpers.convertIsoStringToLocalDate
 import br.com.pedrovieira.doetempo.helpers.randomColor
-import br.com.pedrovieira.doetempo.models.CepResponse
+import br.com.pedrovieira.doetempo.models.responses.CepResponse
+import br.com.pedrovieira.doetempo.models.responses.RegisterUserInCampaignResponse
 import br.com.pedrovieira.doetempo.screens.ui.theme.DoeTempoTheme
 import br.com.pedrovieira.doetempo.screens.ui.theme.Typography
 import coil.compose.AsyncImage
@@ -76,7 +83,8 @@ class CampaignDetailsActivity : ComponentActivity() {
             var address by remember {
                 mutableStateOf(CepResponse())
             }
-
+            val dataStore = DataStoreAppData(this)
+            val typeUser = dataStore.getType.collectAsState(initial = "").value.toString()
 
             val idCampaign = this.intent.getStringExtra("id_campaign").toString()
             val call = RetrofitApiDoeTempo.retrofitCampaignServices().getById(idCampaign)
@@ -116,9 +124,14 @@ class CampaignDetailsActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = androidx.compose.material.MaterialTheme.colors.background,
+                    color = MaterialTheme.colors.background,
                 ) {
-                    CampaignDetails(campaignDetailsState, address)
+                    CampaignDetails(
+                        campaignDetailsState,
+                        address,
+                        typeUser,
+                        idCampaign
+                    )
                 }
             }
         }
@@ -126,13 +139,22 @@ class CampaignDetailsActivity : ComponentActivity() {
 }
 
 @Composable
-fun CampaignDetails(campaign: Campaign, address: CepResponse) {
+fun CampaignDetails(
+    campaign: Campaign,
+    address: CepResponse,
+    typeUser: String,
+    idCampaign: String,
+) {
     var isLoading by remember {
         mutableStateOf(true)
     }
 
     var editable by remember {
         mutableStateOf(false)
+    }
+
+    var buttonState by remember {
+        mutableStateOf(ButtonState.IDLE)
     }
 
     val imageLoader = LocalContext.current.imageLoader.newBuilder()
@@ -152,6 +174,10 @@ fun CampaignDetails(campaign: Campaign, address: CepResponse) {
     if (!campaign.campaignCauses.isNullOrEmpty()) {
         causes = campaign.campaignCauses
     }
+
+    val context = LocalContext.current
+    val dataStorelocal = DataStoreAppData(context = context)
+    val token = dataStorelocal.getToken.collectAsState(initial = "").value.toString()
 
     TopBar(campaign.title)
     Column(
@@ -345,13 +371,59 @@ fun CampaignDetails(campaign: Campaign, address: CepResponse) {
             }
         }
     }
-    Box(modifier = Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.BottomCenter) {
-        Button(onClick = { /*TODO*/ },
-            Modifier
-                .fillMaxWidth().clip(RoundedCornerShape(12.dp)),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-        ) {
-            Text(text = "Inscrever-se", Modifier.padding(6.dp), style = MaterialTheme.typography.button, color = MaterialTheme.colors.onSurface)
+    if (typeUser == "USER") {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp), contentAlignment = Alignment.BottomCenter) {
+            Button(onClick = {
+                buttonState = ButtonState.LOADING
+                Log.i("token", token)
+                             val registerUserInCampaign = RetrofitApiDoeTempo
+                                 .retrofitUserServices()
+                                 .registerUserInCampaign("Bearer $token", idCampaign = idCampaign)
+
+                registerUserInCampaign.enqueue(object : Callback<RegisterUserInCampaignResponse> {
+                    override fun onResponse(
+                        call: Call<RegisterUserInCampaignResponse>,
+                        response: Response<RegisterUserInCampaignResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.i("inscrito", response.body().toString())
+                            Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
+                            buttonState = ButtonState.DONE
+                        } else {
+                            Toast.makeText(context, "Algo deu errado! Tente novamente mais tarde.", Toast.LENGTH_SHORT).show()
+                            buttonState = ButtonState.IDLE
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<RegisterUserInCampaignResponse>,
+                        t: Throwable
+                    ) {
+                        Toast.makeText(context, "Não foi possivel fazer isso agora, tente novamente mais tarde!", Toast.LENGTH_SHORT).show()
+                        buttonState = ButtonState.IDLE
+                    }
+                })
+            },
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp)),
+                enabled = buttonState == ButtonState.IDLE,
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+            ) {
+                when (buttonState) {
+                    ButtonState.IDLE -> Text(text = "Inscrever-se", Modifier.padding(6.dp), style = MaterialTheme.typography.button, color = MaterialTheme.colors.onSurface)
+                    ButtonState.LOADING -> CircularProgressIndicator()
+                    ButtonState.DONE -> Text(
+                        text = "Você ja está inscrito!",
+                        Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.button,
+                        color = MaterialTheme.colors.primary
+                    )
+                }
+
+            }
         }
     }
 }
@@ -361,6 +433,6 @@ fun CampaignDetails(campaign: Campaign, address: CepResponse) {
 @Composable
 fun GreetingPreview() {
     DoeTempoTheme {
-        CampaignDetails(campaign = Campaign(), address = CepResponse())
+        CampaignDetails(campaign = Campaign(), address = CepResponse(), typeUser = "", idCampaign = "")
     }
 }

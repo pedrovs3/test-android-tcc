@@ -2,6 +2,7 @@ package br.com.pedrovieira.doetempo.screens
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,6 +55,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.log
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,23 +65,9 @@ class LoginActivity : ComponentActivity() {
                 mutableStateOf("")
             }
 
-            var buttonState by remember {
-                mutableStateOf(ButtonState.IDLE)
-            }
-
-            if (token.isEmpty()) {
-                buttonState = ButtonState.IDLE
-            }
-
             val scope = rememberCoroutineScope()
             val dataStore = DataStoreAppData(this)
             token = dataStore.getToken.collectAsState(initial = "").value.toString()
-
-            if (token.isNotEmpty()) {
-                scope.launch{
-                    dataStore.deleteToken()
-                }
-            }
             DoeTempoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -87,7 +75,7 @@ class LoginActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    Home(token, buttonState)
+                    Home(token)
                 }
             }
         }
@@ -96,9 +84,8 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun Home(token: String, buttonState: ButtonState) {
+fun Home(token: String) {
     val context = LocalContext.current
-
     var emailState by remember {
         mutableStateOf("")
     }
@@ -116,7 +103,7 @@ fun Home(token: String, buttonState: ButtonState) {
     }
 
     var buttonState by remember {
-        mutableStateOf(buttonState)
+        mutableStateOf(ButtonState.IDLE)
     }
 
 
@@ -166,6 +153,13 @@ fun Home(token: String, buttonState: ButtonState) {
         ) {
             Button(
                 onClick = {
+                    if (token.isNotEmpty()) {
+                        Log.i("token", "deletadooo")
+                        scope.launch{
+                            dataStore.deleteToken()
+                        }
+                    }
+
                     buttonState = ButtonState.LOADING
                     val authBody = AuthDTO(emailState, passwordState)
                     val call = RetrofitApiDoeTempo.retrofitServiceAuth().login(authBody)
@@ -184,7 +178,7 @@ fun Home(token: String, buttonState: ButtonState) {
                                 }
 
                                 if(response.body()?.token?.isNotEmpty() == true) {
-                                    val intent = Intent(context, MainActivity::class.java)
+                                    val intent = Intent(context, MainActivity::class.java).putExtra("token", response.body()!!.token)
                                     startActivity(context, intent, null)
                                 }else {
                                     Toast.makeText(context, "Usuário ou senha incorreto! Tente novamente.", Toast.LENGTH_SHORT).show()
@@ -242,6 +236,6 @@ fun Home(token: String, buttonState: ButtonState) {
 @Composable
 fun DefaultPreview() {
     DoeTempoTheme {
-        Home(token = "", buttonState = ButtonState.IDLE)
+        Home(token = "")
     }
 }
