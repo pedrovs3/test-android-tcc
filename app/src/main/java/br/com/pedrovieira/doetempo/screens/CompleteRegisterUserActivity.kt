@@ -1,5 +1,6 @@
 package br.com.pedrovieira.doetempo.screens
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -57,13 +58,17 @@ class CompleteRegisterUserActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val dataStore = DataStoreAppData(this)
+            var gender = this.intent.getStringExtra("gender")
+            if (gender.isNullOrEmpty()) {
+                gender = ""
+            }
             DoeTempoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CompleteRegisterUser(dataStore)
+                    CompleteRegisterUser(dataStore, gender)
                 }
             }
         }
@@ -71,7 +76,7 @@ class CompleteRegisterUserActivity : ComponentActivity() {
 }
 
 @Composable
-fun CompleteRegisterUser(datastore: DataStoreAppData) {
+fun CompleteRegisterUser(datastore: DataStoreAppData, gender: String) {
     var cpfState by remember {
         mutableStateOf("")
     }
@@ -100,7 +105,6 @@ fun CompleteRegisterUser(datastore: DataStoreAppData) {
     val emailUser = datastore.getEmailRegister.collectAsState(initial = "").value.toString()
     val password = datastore.getPasswordRegister.collectAsState(initial = "").value.toString()
     val birthDate = datastore.getBirthdateRegister.collectAsState(initial = "").value.toString()
-//    val gender = datastore.getGenderRegister.collectAsState(initial = "").value.toString()
 
     Column(
         Modifier
@@ -124,7 +128,7 @@ fun CompleteRegisterUser(datastore: DataStoreAppData) {
         }
         Column(
             Modifier
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -247,48 +251,51 @@ fun CompleteRegisterUser(datastore: DataStoreAppData) {
                         )
                     )
                 }
+                Column(Modifier.fillMaxHeight().fillMaxWidth(), verticalArrangement = Arrangement.Bottom) {
+                    Button(
+                        onClick = {
+                            val user = UserCreate(
+                                name = nameUser,
+                                email = emailUser,
+                                password,
+                                address = AddressDTO(postalCode = cepState, number = numberState),
+                                birthdate = birthDate,
+                                cpf = cpfState,
+                                gender = gender
+                            )
+
+                            val registerUserCall = RetrofitApiDoeTempo.retrofitUserServices().saveUser(user)
+                            registerUserCall.enqueue(object : Callback<UserCreatedResponse> {
+                                override fun onResponse(
+                                    call: Call<UserCreatedResponse>,
+                                    response: Response<UserCreatedResponse>
+                                ) {
+                                    if(response.isSuccessful) {
+                                        Toast.makeText(context, "Usuário criado com sucesso", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(context, LoginActivity::class.java)
+                                        context.startActivity(intent)
+                                        Log.i("created", response.body().toString())
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<UserCreatedResponse>, t: Throwable) {
+                                    TODO("Not yet implemented")
+                                }
+                            })
+                        },
+                        Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.onSurface)) {
+                        Text(
+                            text = "Enviar",
+                            Modifier.padding(vertical = 5.dp),
+                            color = MaterialTheme.colors.primary ,
+                            style = MaterialTheme.typography.button
+                        )
+                    }
+                }
             }
-        }
-        Button(
-            onClick = {
-                val user = UserCreate(
-                    name = nameUser,
-                    email = emailUser,
-                    password,
-                    address = AddressDTO(postalCode = cepState, number = numberState),
-                    birthdate = birthDate,
-                    cpf = cpfState,
-//                    gender = gender
-                )
-
-                val registerUserCall = RetrofitApiDoeTempo.retrofitUserServices().saveUser(user)
-                registerUserCall.enqueue(object : Callback<UserCreatedResponse> {
-                    override fun onResponse(
-                        call: Call<UserCreatedResponse>,
-                        response: Response<UserCreatedResponse>
-                    ) {
-                        if(response.isSuccessful) {
-                            Toast.makeText(context, "Usuário criado com sucesso", Toast.LENGTH_SHORT).show()
-                            Log.i("created", response.body().toString())
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserCreatedResponse>, t: Throwable) {
-                        TODO("Not yet implemented")
-                    }
-                })
-            },
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.onSurface)) {
-            Text(
-                text = "Enviar",
-                Modifier.padding(vertical = 5.dp),
-                color = MaterialTheme.colors.primary ,
-                style = MaterialTheme.typography.button
-            )
         }
     }
 }
@@ -297,6 +304,6 @@ fun CompleteRegisterUser(datastore: DataStoreAppData) {
 @Composable
 fun GreetingPreview7() {
     DoeTempoTheme {
-        CompleteRegisterUser(datastore = DataStoreAppData(context = LocalContext.current))
+        CompleteRegisterUser(datastore = DataStoreAppData(context = LocalContext.current), gender = "")
     }
 }

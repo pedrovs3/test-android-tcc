@@ -4,7 +4,7 @@ import br.com.pedrovieira.doetempo.models.AllGenders
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface GendersRestrofitService {
+interface GendersRetrofitService {
     @GET("gender")
     fun getGenders(): Call<AllGenders>
 }

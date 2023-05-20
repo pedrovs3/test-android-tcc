@@ -7,13 +7,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,23 +21,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.Button
 import androidx.compose.material.RadioButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,8 +55,8 @@ import androidx.compose.ui.unit.dp
 import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.api.RetrofitApiDoeTempo
 import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
-import br.com.pedrovieira.doetempo.datastore.models.dto.GenderDTO
 import br.com.pedrovieira.doetempo.models.AllGenders
+import br.com.pedrovieira.doetempo.models.Gender
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -75,7 +71,7 @@ class RegisterUserActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var allGenders by rememberSaveable {
-                mutableStateOf(listOf(GenderDTO()))
+                mutableStateOf(listOf(Gender()))
             }
             val gendersCall = RetrofitApiDoeTempo.retrofitGenderServices().getGenders()
             gendersCall.enqueue(object :Callback<AllGenders> {
@@ -106,7 +102,7 @@ class RegisterUserActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterUser(allGenders: List<GenderDTO>?) {
+fun RegisterUser(allGenders: List<Gender>) {
     var nameState by remember {
         mutableStateOf("")
     }
@@ -143,8 +139,7 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
             .paint(
                 painter = painterResource(id = R.drawable.bg_register),
                 alignment = Alignment.BottomCenter
-            ),
-        verticalArrangement = Arrangement.SpaceEvenly
+            )
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Image(
@@ -156,13 +151,13 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
                     .padding(top = 20.dp)
             )
         }
+        Spacer(modifier = Modifier.height(20.dp))
         Column(
             Modifier
-                .fillMaxHeight(0.75f)
+                .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             OutlinedTextField(
                 value = nameState,
@@ -232,8 +227,6 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
                 color = Color.White,
                 style = MaterialTheme.typography.subtitle1
             )
-
-            if (allGenders != null) {
                 if (allGenders.isNotEmpty()) {
                     val (selectedOption, onOptionSelected) = remember { mutableStateOf(allGenders[0]) }
                     Column(Modifier.selectableGroup()) {
@@ -247,7 +240,7 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
                                         onClick = {
                                             onOptionSelected(text)
                                             genderState = text.id.toString()
-                                            //                                        Log.i("ds3m", genderState)
+                                            Log.i("ds3m", genderState)
                                         },
                                         role = Role.RadioButton
                                     )
@@ -264,64 +257,33 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
                     }
                 }
             }
-
-//            LazyRow(Modifier.fillMaxSize()) {
-//                if (allGenders?.isNotEmpty() == true) {
-//                    items(allGenders.size) { index ->
-//                        if (selectedOption === allGenders[index].id) {
-//                            Text(
-//                                text = allGenders[index].name.toString(),
-//                                Modifier
-//                                    .padding(5.dp)
-//                                    .clip(shape = RoundedCornerShape(10.dp))
-//                                    .clickable {
-//                                        selectedOption = allGenders[index].id.toString()
-//                                    }
-//                                    .background(MaterialTheme.colors.secondary)
-//                                    .padding(10.dp),
-//                                color = MaterialTheme.colors.primary
-//                            )
-//                        } else {
-//                            Text(
-//                                text = allGenders[index].name.toString(),
-//                                Modifier
-//                                    .padding(5.dp)
-//                                    .clip(shape = RoundedCornerShape(10.dp))
-//                                    .clickable {
-//                                        selectedOption = allGenders[index].id.toString()
-//                                    }
-//                                    .padding(10.dp)
-//                            )
-//                        }
-//
-//                    }
-//                }
-//            }
         }
+        Spacer(modifier = Modifier.height(20.dp))
         Column(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-                .padding(horizontal = 30.dp), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
+                .fillMaxHeight()
+                .padding(horizontal = 30.dp).padding(bottom = 30.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Bottom) {
             Button(
                 onClick = {
                     Toast.makeText(context, genderState, Toast.LENGTH_SHORT).show()
                           if (
-                              email.isNotEmpty()
-                              && password.isNotEmpty()
-                              && nameState.isNotEmpty()
-                              && birthdate !== "Data de nascimento"
-                              && genderState.isNotEmpty()
+                              (email.isNotEmpty()
+                                      && password.isNotEmpty()
+                                      && nameState.isNotEmpty()
+                                      && birthdate !== "Data de nascimento") && genderState.isNotEmpty()
                           ) {
                               scope.launch {
                                   datastore.saveNameRegister(nameState)
                                   datastore.saveEmailRegister(email)
                                   datastore.savePasswordRegister(password = password)
                                   datastore.saveBirthdateRegister(birthdate)
-                                  datastore.saveGenderRegister(genderState)
                               }
 
                               val intent = Intent(context, CompleteRegisterUserActivity::class.java)
+                              intent.putExtra("gender", genderState)
                               context.startActivity(intent)
                           }
                 },
@@ -336,8 +298,7 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
                     contentDescription = "Avançar",
                     Modifier.size(40.dp),
                     tint = MaterialTheme.colors.primary
-                )
-            }
+            )
         }
     }
 }
@@ -346,6 +307,6 @@ fun RegisterUser(allGenders: List<GenderDTO>?) {
 @Composable
 fun GreetingPreview6() {
     DoeTempoTheme {
-        RegisterUser(allGenders = listOf(GenderDTO()))
+        RegisterUser(allGenders = listOf(Gender()))
     }
 }
