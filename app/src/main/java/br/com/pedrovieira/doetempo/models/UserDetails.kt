@@ -3,9 +3,9 @@ package br.com.pedrovieira.doetempo.models
 import br.com.pedrovieira.doetempo.datastore.models.Address
 import br.com.pedrovieira.doetempo.datastore.models.Phone
 import br.com.pedrovieira.doetempo.datastore.models.User
-import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.datastore.models.campaign.UserSupportedCampaign
 import br.com.pedrovieira.doetempo.datastore.models.dto.GenderDTO
+import br.com.pedrovieira.doetempo.models.count.Count
 import com.google.gson.annotations.SerializedName
 
 data class UserDetails(
@@ -36,8 +36,8 @@ data class UserDetails(
 //    val userAddress: UserAddress? = null,
 //    @SerializedName("user_phone")
 //    val userPhone: Any? = null,
-//    @SerializedName("post_user")
-//    val postUser: List<Any?>? = null,
+    @SerializedName("post_user")
+    val postUser: List<PostUser>? = null,
     @SerializedName("_count")
     val count: Count? = null
 )

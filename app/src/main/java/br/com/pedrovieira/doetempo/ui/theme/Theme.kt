@@ -1,19 +1,18 @@
 package br.com.pedrovieira.doetempo.ui.theme
 
-import androidx.annotation.ColorRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = BlueBerry,
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFF1c1c1e),
+    background = DarkBackground,
+    onPrimary = OnDarkBackground,
     secondaryVariant = MorningBlue
 )
 
@@ -22,8 +21,9 @@ private val LightColorPalette = lightColors(
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFFFBFBFD),
-    secondaryVariant = MorningBlue
+    background = Background,
+    secondaryVariant = MorningBlue,
+    onPrimary = OnWhiteBackground
 )
     /* Other default colors to override
     surface = Color.White,

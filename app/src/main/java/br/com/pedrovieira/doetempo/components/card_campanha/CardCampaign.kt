@@ -66,7 +66,8 @@ fun CardCampaign(context: Context, campaign: Campaign) {
     },
         Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp), backgroundColor = Color(0xFFF4F4F4),
+            .padding(top = 10.dp),
+            backgroundColor = MaterialTheme.colors.onPrimary,
             elevation = 0.dp,
             shape = RoundedCornerShape(12.dp)
         ) {

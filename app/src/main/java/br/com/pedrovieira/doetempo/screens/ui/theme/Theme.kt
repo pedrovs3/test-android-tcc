@@ -7,8 +7,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import br.com.pedrovieira.doetempo.ui.theme.Background
 import br.com.pedrovieira.doetempo.ui.theme.BlueBerry
+import br.com.pedrovieira.doetempo.ui.theme.DarkBackground
 import br.com.pedrovieira.doetempo.ui.theme.MayaBlue
+import br.com.pedrovieira.doetempo.ui.theme.OnDarkBackground
+import br.com.pedrovieira.doetempo.ui.theme.OnWhiteBackground
 import br.com.pedrovieira.doetempo.ui.theme.Shapes
 import br.com.pedrovieira.doetempo.ui.theme.TuftsBlue
 import br.com.pedrovieira.doetempo.ui.theme.Turquouise_700
@@ -41,8 +45,9 @@ private val DarkColorPalette = darkColors(
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFF1c1c1e),
-    secondaryVariant = MorningBlue
+    background = DarkBackground,
+    onPrimary = OnDarkBackground,
+    secondaryVariant = br.com.pedrovieira.doetempo.ui.theme.MorningBlue
 )
 
 private val LightColorPalette = lightColors(
@@ -50,8 +55,9 @@ private val LightColorPalette = lightColors(
     primaryVariant = TuftsBlue,
     secondary = MayaBlue,
     onSurface = Turquouise_700,
-    background = Color(0xFFFBFBFD),
-    secondaryVariant = MorningBlue
+    background = Background,
+    secondaryVariant = br.com.pedrovieira.doetempo.ui.theme.MorningBlue,
+    onPrimary = OnWhiteBackground
 )
 
 

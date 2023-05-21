@@ -1,8 +1,6 @@
 package br.com.pedrovieira.doetempo.datastore.models
 
 import br.com.pedrovieira.doetempo.datastore.models.dto.GenderDTO
-import br.com.pedrovieira.doetempo.models.Count
-import br.com.pedrovieira.doetempo.models.UserAddress
 import com.google.gson.annotations.SerializedName
 
 data class User(
