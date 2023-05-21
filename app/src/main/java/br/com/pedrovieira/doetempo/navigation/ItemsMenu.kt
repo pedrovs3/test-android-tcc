@@ -8,6 +8,6 @@ sealed class ItemsMenu (
     val route: String
 ) {
     object Campaign: ItemsMenu(R.drawable.campaign_icon, title = "Campanhas", route = "campaign")
-    object User: ItemsMenu(R.drawable.person_icon, title = "Perfil", route = "user")
+    object User: ItemsMenu(R.drawable.baseline_search_24, title = "Pesquisar", route = "user")
     object Feed: ItemsMenu(R.drawable.feed_icon, title = "Feed", route = "feed")
 }

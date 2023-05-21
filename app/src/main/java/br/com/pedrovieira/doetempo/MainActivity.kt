@@ -30,6 +30,7 @@ import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.User
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.datastore.models.responses.CampaignsResponse
+import br.com.pedrovieira.doetempo.models.UserDetails
 import br.com.pedrovieira.doetempo.models.responses.UserDetailsResponse
 import br.com.pedrovieira.doetempo.navigation.ItemsMenu
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
@@ -59,11 +60,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BottomMenuNavigation() {
     val context = LocalContext.current
-    var userDetails by remember {
-        mutableStateOf(User())
-    }
     var campaigns by remember {
         mutableStateOf(listOf(Campaign()))
+    }
+    var userDetails by remember {
+        mutableStateOf(UserDetails())
     }
 
     val dataStore = DataStoreAppData(context = context)
@@ -71,10 +72,8 @@ fun BottomMenuNavigation() {
     val typeUser = dataStore.getType.collectAsState(initial = "").value.toString()
     val token = dataStore.getToken.collectAsState(initial = "").value.toString()
     val idUser = dataStore.getIdUser.collectAsState(initial = "").value.toString()
-
-    val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
-
     if (typeUser == "USER") {
+        Log.i("userDetailsToken", token)
         val callUserDetails = RetrofitApiDoeTempo
             .retrofitUserServices()
             .getUserDetails("Bearer $token", id = idUser)
@@ -85,15 +84,16 @@ fun BottomMenuNavigation() {
                 response: Response<UserDetailsResponse>
             ) {
                 if (response.isSuccessful) {
-                    Log.i("userDetails", response.body()?.user.toString())
+                    userDetails = response.body()!!.user!!
                 }
             }
 
             override fun onFailure(call: Call<UserDetailsResponse>, t: Throwable) {
-                TODO("Not yet implemented")
+                Log.i("userDetails", t.message.toString())
             }
         })
     }
+    val call = RetrofitApiDoeTempo.retrofitCampaignServices().getAll()
 
     call.enqueue(object: Callback<CampaignsResponse> {
         override fun onResponse(
@@ -123,7 +123,7 @@ fun BottomMenuNavigation() {
         scaffoldState = scaffoldState,
         bottomBar = { BottomBar(navController, menuItems = navigationItem) },
     ) {
-        NavigationHost(navController = navController, campaigns = campaigns, idUser = idUser)
+        NavigationHost(navController = navController, campaigns = campaigns, idUser = idUser, userDetails)
     }
 }
 

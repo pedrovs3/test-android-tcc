@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -23,19 +25,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.components.card_campanha.CardCampaign
 import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
+import br.com.pedrovieira.doetempo.models.UserDetails
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
+import coil.compose.AsyncImage
+import coil.imageLoader
+import coil.util.DebugLogger
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeCampaigns(campaigns: List<Campaign>) {
+fun HomeCampaigns(campaigns: List<Campaign>, user: UserDetails?) {
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
+
     var nameUser by remember {
         mutableStateOf("")
     }
@@ -47,6 +61,10 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
     if (namesUserListSplitted.size > 2) {
         nameUser = "${namesUserListSplitted[0]} ${namesUserListSplitted[namesUserListSplitted.lastIndex]}"
     }
+
+    val imageLoader = LocalContext.current.imageLoader.newBuilder()
+        .logger(DebugLogger())
+        .build()
 
     Column(
         Modifier
@@ -63,7 +81,19 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
                 val intent = Intent(context, PerfilActivity::class.java)
                 context.startActivity(intent)
             }) {
-                Icon(imageVector = Icons.Default.Settings, contentDescription = "Button for settings")
+                AsyncImage(
+                    model = user?.photoURL.toString(),
+                    contentDescription = "Imagem da ong responsavel pela campanha.",
+                    imageLoader = imageLoader,
+                    modifier = Modifier
+                        .size(45.dp, 45.dp)
+                        .clip(RoundedCornerShape(50.dp)),
+                    placeholder = painterResource(id = R.drawable.logo_doe_tempo),
+                    contentScale = ContentScale.Crop,
+                    onError = { isLoading = false },
+                    onSuccess = { isLoading = false},
+                )
+//                Icon(imageVector = Icons.Default.Settings, contentDescription = "Button for settings")
             }
         }
         Column(
@@ -86,6 +116,6 @@ fun HomeCampaigns(campaigns: List<Campaign>) {
 @Composable
 fun DefaultPreview2() {
     DoeTempoTheme {
-        HomeCampaigns(campaigns = listOf(Campaign()))
+        HomeCampaigns(campaigns = listOf(Campaign()), user = UserDetails())
     }
 }

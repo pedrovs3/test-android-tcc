@@ -27,4 +27,6 @@ data class Campaign (
     val campaignPhotos: List<CampaignPhoto>? = null,
     @SerializedName("campaign_participants")
     val campaignParticipants: List<CampaignParticipant>? = null,
+    @SerializedName("is_active")
+    val isActive: Boolean? = null,
 )

@@ -7,7 +7,6 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import br.com.pedrovieira.doetempo.screens.ui.theme.MorningBlue
 
 private val DarkColorPalette = darkColors(
     primary = BlueBerry,
