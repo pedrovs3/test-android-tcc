@@ -144,7 +144,10 @@ fun PerfilScreen(idUser: String?, user: UserDetails?) {
                     placeholder = painterResource(id = R.drawable.logo_doe_tempo),
                     onSuccess = { isLoading = false },
                     onError = { isLoading = false },
-                ), alignment = Alignment.TopCenter, contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.Inside
+                ),
+                alignment = Alignment.TopCenter,
+                contentScale = ContentScale.FillWidth
             )) {
         Column(
             Modifier

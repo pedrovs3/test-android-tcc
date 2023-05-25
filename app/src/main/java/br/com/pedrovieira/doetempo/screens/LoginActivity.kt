@@ -161,7 +161,7 @@ fun Home(token: String) {
                     }
 
                     buttonState = ButtonState.LOADING
-                    val authBody = AuthDTO("pedrovs3@hotmail.com", "ccx967408") //AuthDTO(emailState, passwordState)
+                    val authBody = AuthDTO(emailState, passwordState) //AuthDTO("pedrovs3@hotmail.com", "ccx967408")
                     val call = RetrofitApiDoeTempo.retrofitServiceAuth().login(authBody)
 
                     call.enqueue(object : Callback<LoginResponse> {
