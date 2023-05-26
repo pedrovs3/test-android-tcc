@@ -98,7 +98,7 @@ fun NewPost(context: Context) {
                 val postBody = CreatePostBody(
                     typeUser = typeUser,
                     content = content,
-                    photos = listOf("")
+                    photos = listOf()
                 )
                 Log.i("body", postBody.toString())
 
