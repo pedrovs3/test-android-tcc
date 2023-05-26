@@ -154,7 +154,6 @@ fun Home(token: String) {
             Button(
                 onClick = {
                     if (token.isNotEmpty()) {
-                        Log.i("token", "deletadooo")
                         scope.launch{
                             dataStore.deleteToken()
                         }

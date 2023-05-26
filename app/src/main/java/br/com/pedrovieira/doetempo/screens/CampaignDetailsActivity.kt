@@ -239,7 +239,8 @@ fun CampaignDetails(
                             .height(250.dp)
                             .padding(top = 10.dp)
                             .align(Alignment.Center)
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp).clip(RoundedCornerShape(12.dp)),
                         placeholder = painterResource(id = R.drawable.logo_doe_tempo),
                         contentScale = ContentScale.Crop,
                         onError = { isLoading = false },

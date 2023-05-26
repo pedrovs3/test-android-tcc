@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "633185975700",
+    "project_id": "upload-photos-app",
+    "storage_bucket": "upload-photos-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633185975700:android:e6416e497dfe3f5dc66381",
+        "android_client_info": {
+          "package_name": "br.com.pedrovieira.doetempo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHP6rZJlRaFHtlYv3G36rbosdjSoRnS6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,6 @@ import coil.util.DebugLogger
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CardPost(context: Context, post: Post, user: UserDetails?) {
-    Log.i("user", "aaaa")
     var image by remember {
         mutableStateOf("")
     }
@@ -53,7 +53,9 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
         .build()
 
     Card(onClick = { /*TODO*/ },
-        Modifier.fillMaxWidth().padding(top = 10.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
         backgroundColor = MaterialTheme.colors.onPrimary,
         elevation = 0.dp,
         shape = RoundedCornerShape(12.dp)
@@ -62,7 +64,7 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp), verticalAlignment = Alignment.CenterVertically
+                    .padding(5.dp), verticalAlignment = Alignment.Top
             ) {
                 Box(
                     Modifier
@@ -94,6 +96,7 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
                         onSuccess = { isLoading = false },
                     )
                 }
+                Text(text = user?.name.toString())
             }
         }
     }
