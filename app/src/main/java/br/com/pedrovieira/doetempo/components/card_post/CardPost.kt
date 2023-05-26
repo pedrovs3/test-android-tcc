@@ -59,15 +59,11 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
         .logger(DebugLogger())
         .build()
 
-    val formatter = DateTimeFormatter.ISO_INSTANT
-    val zonedDateTime = ZonedDateTime.parse(post?.createdAt.toString())
-    val localDate = zonedDateTime.toLocalDateTime()
+    val zonedDateTime = ZonedDateTime.parse(post.createdAt.toString())
+    val localDate = zonedDateTime.toLocalDateTime().minusHours(3)
+    val formatterPattern = DateTimeFormatter.ofPattern("dd 'de' MMMM 'às' HH:mm", Locale("pt", "BR"))
+    val formattedDateTime = localDate.format(formatterPattern)
 
-    val formatterPattern = DateTimeFormatter.ofPattern("dd 'de' LLLL 'às' HH:mm", Locale("pt", "BR"))
-    val formattedDateTime = zonedDateTime.format(formatterPattern)
-    Log.i("data atual", formattedDateTime.toString())
-    Log.i("data atual", user?.createdAt.toString())
-    Log.i("data atual", zonedDateTime.toString())
     Card(onClick = { /*TODO*/ },
         Modifier
             .fillMaxWidth()
