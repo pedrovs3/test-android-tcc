@@ -60,7 +60,7 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
         .build()
 
     val formatter = DateTimeFormatter.ISO_INSTANT
-    val zonedDateTime = ZonedDateTime.parse(user?.createdAt.toString())
+    val zonedDateTime = ZonedDateTime.parse(post?.createdAt.toString())
     val localDate = zonedDateTime.toLocalDateTime()
 
     val formatterPattern = DateTimeFormatter.ofPattern("dd 'de' LLLL 'às' HH:mm", Locale("pt", "BR"))

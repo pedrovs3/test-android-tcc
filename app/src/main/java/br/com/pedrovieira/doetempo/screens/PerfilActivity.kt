@@ -143,7 +143,6 @@ fun PerfilScreen(idUser: String?, user: UserDetails?) {
 
     val yearOfSubscribe = convertIsoStringToLocalDate(user?.createdAt.toString())?.year
 
-    Log.i("user", user.toString())
     Box(
         Modifier
             .fillMaxSize(),
