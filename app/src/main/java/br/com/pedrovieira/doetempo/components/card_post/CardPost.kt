@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +34,12 @@ import br.com.pedrovieira.doetempo.models.UserDetails
 import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.util.DebugLogger
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -52,6 +59,15 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
         .logger(DebugLogger())
         .build()
 
+    val formatter = DateTimeFormatter.ISO_INSTANT
+    val zonedDateTime = ZonedDateTime.parse(user?.createdAt.toString())
+    val localDate = zonedDateTime.toLocalDateTime()
+
+    val formatterPattern = DateTimeFormatter.ofPattern("dd 'de' LLLL 'às' HH:mm", Locale("pt", "BR"))
+    val formattedDateTime = zonedDateTime.format(formatterPattern)
+    Log.i("data atual", formattedDateTime.toString())
+    Log.i("data atual", user?.createdAt.toString())
+    Log.i("data atual", zonedDateTime.toString())
     Card(onClick = { /*TODO*/ },
         Modifier
             .fillMaxWidth()
@@ -96,7 +112,11 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
                         onSuccess = { isLoading = false },
                     )
                 }
-                Text(text = user?.name.toString())
+                Column(Modifier.fillMaxSize()) {
+                    Text(text = user?.name.toString())
+                    Text(text = formattedDateTime.toString())
+                    Text(text = post.content.toString())
+                }
             }
         }
     }
