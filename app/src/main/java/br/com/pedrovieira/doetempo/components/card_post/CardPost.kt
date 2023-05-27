@@ -7,10 +7,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -27,7 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.models.Post
 import br.com.pedrovieira.doetempo.models.UserDetails
@@ -109,9 +114,19 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
                     )
                 }
                 Column(Modifier.fillMaxSize()) {
-                    Text(text = user?.name.toString())
-                    Text(text = formattedDateTime.toString())
+                    Text(text = user?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(text = formattedDateTime.toString(), fontSize = 12.sp)
                     Text(text = post.content.toString())
+                    Spacer(modifier = Modifier.height(5.dp))
+                    LazyRow {
+                        post.postPhoto?.size?.let {
+                            items(it) {
+                                Box(modifier = Modifier.clip(RoundedCornerShape(12.dp))) {
+                                    AsyncImage(model = post.postPhoto[it].photoURL, contentDescription = "Foto do post")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
