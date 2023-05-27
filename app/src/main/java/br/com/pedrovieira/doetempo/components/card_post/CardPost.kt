@@ -1,7 +1,10 @@
 package br.com.pedrovieira.doetempo.components.card_post
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -118,13 +121,13 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
                     Text(text = formattedDateTime.toString(), fontSize = 12.sp)
                     Text(text = post.content.toString())
                     Spacer(modifier = Modifier.height(5.dp))
-                    LazyRow {
-                        post.postPhoto?.size?.let {
-                            items(it) {
-                                Box(modifier = Modifier.clip(RoundedCornerShape(12.dp))) {
-                                    AsyncImage(model = post.postPhoto[it].photoURL, contentDescription = "Foto do post")
-                                }
-                            }
+                }
+            }
+            LazyRow {
+                post.postPhoto?.size?.let {
+                    items(it) {
+                        Box(modifier = Modifier.clip(RoundedCornerShape(12.dp))) {
+                            AsyncImage(model = post.postPhoto[it].photoURL, contentDescription = "Foto do post", contentScale = ContentScale.Fit)
                         }
                     }
                 }

@@ -154,7 +154,7 @@ fun PerfilScreen(idUser: String?, user: UserDetails?) {
             placeholder = painterResource(id = R.drawable.logo_doe_tempo),
             onSuccess = { isLoading = false },
             onError = { isLoading = false },
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds
         ), contentDescription = "banner",
             Modifier
                 .heightIn(80.dp, 100.dp)
