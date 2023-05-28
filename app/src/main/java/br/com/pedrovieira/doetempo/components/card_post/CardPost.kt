@@ -1,10 +1,6 @@
 package br.com.pedrovieira.doetempo.components.card_post
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -37,21 +33,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.pedrovieira.doetempo.R
+import br.com.pedrovieira.doetempo.models.NgoPostData
 import br.com.pedrovieira.doetempo.models.Post
 import br.com.pedrovieira.doetempo.models.UserDetails
 import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.util.DebugLogger
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CardPost(context: Context, post: Post, user: UserDetails?) {
+fun CardPost(context: Context, post: Post, user: UserDetails?, ngo: NgoPostData?, ) {
     var image by remember {
         mutableStateOf("")
     }
@@ -61,6 +55,8 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
 
     if (!user?.id.isNullOrEmpty()) {
         image = user?.photoURL.toString()
+    } else {
+        image = ngo?.photoURL.toString()
     }
 
     val imageLoader = LocalContext.current.imageLoader.newBuilder()
@@ -116,11 +112,20 @@ fun CardPost(context: Context, post: Post, user: UserDetails?) {
                         onSuccess = { isLoading = false },
                     )
                 }
-                Column(Modifier.fillMaxSize()) {
-                    Text(text = user?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Text(text = formattedDateTime.toString(), fontSize = 12.sp)
-                    Text(text = post.content.toString())
-                    Spacer(modifier = Modifier.height(5.dp))
+                if (!user?.id.isNullOrEmpty()) {
+                    Column(Modifier.fillMaxSize()) {
+                        Text(text = user?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(text = formattedDateTime.toString(), fontSize = 12.sp)
+                        Text(text = post.content.toString())
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+                } else {
+                    Column(Modifier.fillMaxSize()) {
+                        Text(text = ngo?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(text = formattedDateTime.toString(), fontSize = 12.sp)
+                        Text(text = post.content.toString())
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
                 }
             }
             LazyRow {

@@ -12,5 +12,10 @@ data class Post (
     @SerializedName("post_photo")
     val postPhoto: List<PostPhoto>? = null,
     val comment: List<Comment>? = null,
-    val count: PostCount? = null
+    val count: PostCount? = null,
+    @SerializedName("post_ngo")
+    val postNgo: List<PostNgo>? = null,
+    @SerializedName("post_user")
+    val postUser: List<PostUserData>? = null
 )
+

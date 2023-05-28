@@ -3,6 +3,7 @@ package br.com.pedrovieira.doetempo
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +31,9 @@ import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.User
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.datastore.models.responses.CampaignsResponse
+import br.com.pedrovieira.doetempo.models.Post
 import br.com.pedrovieira.doetempo.models.UserDetails
+import br.com.pedrovieira.doetempo.models.responses.AllPostResponse
 import br.com.pedrovieira.doetempo.models.responses.UserDetailsResponse
 import br.com.pedrovieira.doetempo.navigation.ItemsMenu
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
@@ -109,13 +112,13 @@ fun BottomMenuNavigation() {
         override fun onFailure(call: Call<CampaignsResponse>, t: Throwable) {
             TODO("Not yet implemented")
         }
-
     })
+
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val navigationItem = listOf(
         ItemsMenu.Campaign,
-        ItemsMenu.User,
+        ItemsMenu.Search,
         ItemsMenu.Feed
     )
 

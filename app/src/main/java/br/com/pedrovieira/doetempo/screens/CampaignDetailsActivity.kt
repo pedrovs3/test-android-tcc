@@ -11,6 +11,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.overscroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -87,6 +91,7 @@ class CampaignDetailsActivity : ComponentActivity() {
             val typeUser = dataStore.getType.collectAsState(initial = "").value.toString()
 
             val idCampaign = this.intent.getStringExtra("id_campaign").toString()
+            val idParticipants = this.intent.getStringArrayExtra("id_participants")
             val call = RetrofitApiDoeTempo.retrofitCampaignServices().getById(idCampaign)
 
             call.enqueue(object: Callback<Campaign> {
@@ -130,7 +135,7 @@ class CampaignDetailsActivity : ComponentActivity() {
                         campaignDetailsState,
                         address,
                         typeUser,
-                        idCampaign
+                        idCampaign,
                     )
                 }
             }
@@ -145,6 +150,7 @@ fun CampaignDetails(
     typeUser: String,
     idCampaign: String,
 ) {
+    var scrollableState = rememberScrollState()
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -178,12 +184,14 @@ fun CampaignDetails(
     val context = LocalContext.current
     val dataStorelocal = DataStoreAppData(context = context)
     val token = dataStorelocal.getToken.collectAsState(initial = "").value.toString()
+    val idUser = dataStorelocal.getIdUser.collectAsState(initial = "").value.toString()
 
     TopBar(campaign.title)
     Column(
         Modifier
             .fillMaxSize()
             .padding(top = 55.dp, end = 15.dp, start = 15.dp)
+            .verticalScroll(scrollableState)
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Row(
@@ -240,7 +248,8 @@ fun CampaignDetails(
                             .padding(top = 10.dp)
                             .align(Alignment.Center)
                             .clip(RoundedCornerShape(10.dp))
-                            .padding(horizontal = 10.dp).clip(RoundedCornerShape(12.dp)),
+                            .padding(horizontal = 10.dp)
+                            .clip(RoundedCornerShape(12.dp)),
                         placeholder = painterResource(id = R.drawable.logo_doe_tempo),
                         contentScale = ContentScale.Crop,
                         onError = { isLoading = false },
@@ -266,164 +275,167 @@ fun CampaignDetails(
 
             }
         }
-        Text(
-            text = "Sobre a campanha:",
-            Modifier
-                .padding(top = 7.dp)
-                .fillMaxWidth(),
-            style = Typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "${campaign.description}",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp),
-            style = MaterialTheme.typography.body1,
-            color = Color(0xB2000000)
-        )
-        Text(
-            text = "Detalhes:",
-            Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth(),
-            style = Typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp)
-                .fillMaxHeight(0.4f),
-            Arrangement.SpaceEvenly
-        ) {
-            Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
-                Icon(painter = painterResource(id = R.drawable.clock_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
-                Spacer(modifier = Modifier.width(10.dp))
-                if (campaign.endDate != null && campaign.beginDate != null ) {
-                    val expireDate =   Period.between(LocalDate.now() ,convertIsoStringToLocalDate(campaign.endDate.toString()))
-                    if (expireDate.isNegative) {
-                        Text(
-                            text = "Campanha encerrada!",
-                            style = MaterialTheme.typography.body1,
-                            color = Color(0xB2000000)
-                        )
-                    } else {
-                        Text(
-                            text = "Encerra em ${expireDate.months} mes(es) e ${expireDate.days} dia(s)",
-                            style = MaterialTheme.typography.body1,
-                            color = Color(0xB2000000)
-                        )
-                    }
-                    // Period.between(convertIsoStringToLocalDate(campaign.beginDate.toString()), convertIsoStringToLocalDate(campaign.endDate.toString()))
-                }
-            }
-            Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
-                Icon(painter = painterResource(id = R.drawable.globe_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
-                Spacer(modifier = Modifier.width(10.dp))
-                if (campaign.homeOffice == true) {
-                    Text(
-                        text = "Pode ser feito à distância",
-                        style = MaterialTheme.typography.body1,
-                        color = Color(0xB2000000))
-                } else {
-                    Text(text = "Apenas presencial!",
-                    style = MaterialTheme.typography.body1,
-                        color = Color(0xB2000000))
-                }
-            }
-            Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
-                Icon(painter = painterResource(id = R.drawable.map_pin_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "${address.logradouro}, ${campaign.campaignAddress?.address?.number} - ${address.bairro}, ${address.localidade} - ${address.uf}",
-                    style = MaterialTheme.typography.body1,
-                    color = Color(0xB2000000))
-            }
-        }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .clickable {
-                    editable = !editable
-                }
-                .clip(RoundedCornerShape(12.dp)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Como contribuir?", style = Typography.titleLarge, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.width(10.dp))
-            Icon(painter = painterResource(id = R.drawable.question), contentDescription = "Como contribuir", Modifier.size(20.dp))
-        }
-        AnimatedVisibility(visible = editable) {
-            Column(Modifier.fillMaxSize()) {
-                Text(text = campaign.howToContribute.toString(),
-                    Modifier.padding(start = 5.dp),
-                    style = MaterialTheme.typography.body1,
-                    color = Color(0xB2000000))
-                Text(
-                    text = "Pré-requisitos:",
-                    Modifier.padding(top = 5.dp),
-                    style = Typography.titleLarge,
-                    fontWeight = FontWeight.Bold)
-                Text(text = campaign.prerequisites.toString(),
-                    Modifier.padding(start = 5.dp),
-                    style = MaterialTheme.typography.body1,
-                    color = Color(0xB2000000))
-            }
-        }
-    }
-    if (typeUser == "USER") {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp), contentAlignment = Alignment.BottomCenter) {
-            Button(onClick = {
-                buttonState = ButtonState.LOADING
-                Log.i("token", token)
-                             val registerUserInCampaign = RetrofitApiDoeTempo
-                                 .retrofitUserServices()
-                                 .registerUserInCampaign("Bearer $token", idCampaign = idCampaign)
-
-                registerUserInCampaign.enqueue(object : Callback<RegisterUserInCampaignResponse> {
-                    override fun onResponse(
-                        call: Call<RegisterUserInCampaignResponse>,
-                        response: Response<RegisterUserInCampaignResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            Log.i("inscrito", response.body().toString())
-                            Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
-                            buttonState = ButtonState.DONE
-                        } else {
-                            Toast.makeText(context, "Algo deu errado! Tente novamente mais tarde.", Toast.LENGTH_SHORT).show()
-                            buttonState = ButtonState.IDLE
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<RegisterUserInCampaignResponse>,
-                        t: Throwable
-                    ) {
-                        Toast.makeText(context, "Não foi possivel fazer isso agora, tente novamente mais tarde!", Toast.LENGTH_SHORT).show()
-                        buttonState = ButtonState.IDLE
-                    }
-                })
-            },
+        Column(Modifier.fillMaxSize()) {
+            Text(
+                text = "Sobre a campanha:",
+                Modifier
+                    .padding(top = 7.dp)
+                    .fillMaxWidth(),
+                style = Typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "${campaign.description}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp),
+                style = MaterialTheme.typography.body1,
+                color = Color(0xB2000000)
+            )
+            Text(
+                text = "Detalhes:",
+                Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxWidth(),
+                style = Typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Column(
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
-                enabled = buttonState == ButtonState.IDLE,
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                    .padding(start = 5.dp)
+                    .fillMaxHeight(0.4f),
+                Arrangement.SpaceEvenly
             ) {
-                when (buttonState) {
-                    ButtonState.IDLE -> Text(text = "Inscrever-se", Modifier.padding(6.dp), style = MaterialTheme.typography.button, color = MaterialTheme.colors.onSurface)
-                    ButtonState.LOADING -> CircularProgressIndicator()
-                    ButtonState.DONE -> Text(
-                        text = "Você ja está inscrito!",
-                        Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.button,
-                        color = MaterialTheme.colors.primary
-                    )
+                Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
+                    Icon(painter = painterResource(id = R.drawable.clock_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    if (campaign.endDate != null && campaign.beginDate != null ) {
+                        val expireDate =   Period.between(LocalDate.now() ,convertIsoStringToLocalDate(campaign.endDate.toString()))
+                        if (expireDate.isNegative) {
+                            Text(
+                                text = "Campanha encerrada!",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xB2000000)
+                            )
+                        } else {
+                            Text(
+                                text = "Encerra em ${expireDate.months} mes(es) e ${expireDate.days} dia(s)",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xB2000000)
+                            )
+                        }
+                        // Period.between(convertIsoStringToLocalDate(campaign.beginDate.toString()), convertIsoStringToLocalDate(campaign.endDate.toString()))
+                    }
                 }
+                Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
+                    Icon(painter = painterResource(id = R.drawable.globe_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    if (campaign.homeOffice == true) {
+                        Text(
+                            text = "Pode ser feito à distância",
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xB2000000))
+                    } else {
+                        Text(text = "Apenas presencial!",
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xB2000000))
+                    }
+                }
+                Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
+                    Icon(painter = painterResource(id = R.drawable.map_pin_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "${address.logradouro}, ${campaign.campaignAddress?.address?.number} - ${address.bairro}, ${address.localidade} - ${address.uf}",
+                        style = MaterialTheme.typography.body1,
+                        color = Color(0xB2000000))
+                }
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        editable = !editable
+                    }
+                    .clip(RoundedCornerShape(12.dp)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Como contribuir?", style = Typography.titleLarge, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(10.dp))
+                Icon(painter = painterResource(id = R.drawable.question), contentDescription = "Como contribuir", Modifier.size(20.dp))
+            }
+            AnimatedVisibility(visible = editable) {
+                Column(Modifier.fillMaxSize()) {
+                    Text(text = campaign.howToContribute.toString(),
+                        Modifier.padding(start = 5.dp),
+                        style = MaterialTheme.typography.body1,
+                        color = Color(0xB2000000))
+                    Text(
+                        text = "Pré-requisitos:",
+                        Modifier.padding(top = 5.dp),
+                        style = Typography.titleLarge,
+                        fontWeight = FontWeight.Bold)
+                    Text(text = campaign.prerequisites.toString(),
+                        Modifier.padding(start = 5.dp),
+                        style = MaterialTheme.typography.body1,
+                        color = Color(0xB2000000))
+                }
+            }
+        }
+        if (typeUser == "USER") {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp),
+                contentAlignment = Alignment.BottomCenter) {
+                Button(onClick = {
+                    buttonState = ButtonState.LOADING
+                    Log.i("token", token)
+                    val registerUserInCampaign = RetrofitApiDoeTempo
+                        .retrofitUserServices()
+                        .registerUserInCampaign("Bearer $token", idCampaign = idCampaign)
 
+                    registerUserInCampaign.enqueue(object : Callback<RegisterUserInCampaignResponse> {
+                        override fun onResponse(
+                            call: Call<RegisterUserInCampaignResponse>,
+                            response: Response<RegisterUserInCampaignResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                Log.i("inscrito", response.body().toString())
+                                Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
+                                buttonState = ButtonState.DONE
+                            } else {
+                                Toast.makeText(context, "Algo deu errado! Tente novamente mais tarde.", Toast.LENGTH_SHORT).show()
+                                buttonState = ButtonState.IDLE
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<RegisterUserInCampaignResponse>,
+                            t: Throwable
+                        ) {
+                            Toast.makeText(context, "Não foi possivel fazer isso agora, tente novamente mais tarde!", Toast.LENGTH_SHORT).show()
+                            buttonState = ButtonState.IDLE
+                        }
+                    })
+                },
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp)),
+                    enabled = buttonState == ButtonState.IDLE,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                ) {
+                    when (buttonState) {
+                        ButtonState.IDLE -> Text(text = "Inscrever-se", Modifier.padding(6.dp), style = MaterialTheme.typography.button, color = MaterialTheme.colors.onSurface)
+                        ButtonState.LOADING -> CircularProgressIndicator()
+                        ButtonState.DONE -> Text(
+                            text = "Você ja está inscrito!",
+                            Modifier.padding(8.dp),
+                            style = MaterialTheme.typography.button,
+                            color = MaterialTheme.colors.primary
+                        )
+                    }
+
+                }
             }
         }
     }
