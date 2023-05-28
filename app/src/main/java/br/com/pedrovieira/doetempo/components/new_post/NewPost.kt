@@ -145,13 +145,23 @@ fun NewPost(context: Context) {
             }
             Spacer(modifier = Modifier.width(5.dp))
             Button(onClick = {
-                Log.i("teste", "aquii")
+                var postBody: CreatePostBody
+
                 buttonState = ButtonState.LOADING
-                val postBody = CreatePostBody(
-                    typeUser = typeUser,
-                    content = content,
-                    photos = listOf(imageToSend)
-                )
+                if(imageToSend.isEmpty()) {
+                    postBody = CreatePostBody(
+                        typeUser = typeUser,
+                        content = content,
+                        photos = listOf()
+                    )
+                } else {
+                    postBody =  CreatePostBody(
+                        typeUser = typeUser,
+                        content = content,
+                        photos = listOf(imageToSend)
+                    )
+                }
+
 
                 Log.i("body", postBody.toString())
 
