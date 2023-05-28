@@ -1,9 +1,15 @@
 package br.com.pedrovieira.doetempo.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,8 +74,18 @@ fun SearchCampaignScreen() {
 
 
 
-    Column(Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-        OutlinedTextField(value = searchString, onValueChange = {searchString = it})
+    Column(Modifier.padding(horizontal = 10.dp, vertical = 10.dp).fillMaxSize()) {
+        OutlinedTextField(
+            value = searchString,
+            onValueChange = { searchString = it },
+            Modifier.fillMaxWidth(),
+            label = { Text(text = "Procure por uma campanha!") },
+            shape = RoundedCornerShape(20.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedLabelColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.primary
+            )
+        )
         LazyColumn {
             items(campaigns.size) {
                 CardCampaign(context = context, campaign = campaigns[it])

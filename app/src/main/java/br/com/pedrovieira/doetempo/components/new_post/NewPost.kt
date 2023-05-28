@@ -137,6 +137,7 @@ fun NewPost(context: Context) {
                 Button(onClick = { launcher.launch("image/*") }, shape = RoundedCornerShape(12.dp)) {
                     Icon(painter = painterResource(id = R.drawable.baseline_add_photo_alternate_24), contentDescription = "adicionar foto.")
                 }
+                // Arrumar caso nao selecione imagem TODO
                 if (selectedImage.isNotEmpty()) {
                     Box(modifier = Modifier.clip(RoundedCornerShape(12.dp))) {
                         Image(painter = painter, contentDescription = "Preview")
