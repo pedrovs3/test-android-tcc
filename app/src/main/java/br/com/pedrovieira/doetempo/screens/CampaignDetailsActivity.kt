@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +65,7 @@ import br.com.pedrovieira.doetempo.datastore.models.campaign.CampaignPhoto
 import br.com.pedrovieira.doetempo.datastore.models.enums.ButtonState
 import br.com.pedrovieira.doetempo.helpers.convertIsoStringToLocalDate
 import br.com.pedrovieira.doetempo.helpers.randomColor
+import br.com.pedrovieira.doetempo.helpers.randomDarkColor
 import br.com.pedrovieira.doetempo.models.responses.CepResponse
 import br.com.pedrovieira.doetempo.models.responses.RegisterUserInCampaignResponse
 import br.com.pedrovieira.doetempo.screens.ui.theme.DoeTempoTheme
@@ -150,7 +152,7 @@ fun CampaignDetails(
     typeUser: String,
     idCampaign: String,
 ) {
-    var scrollableState = rememberScrollState()
+    val scrollableState = rememberScrollState()
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -200,6 +202,7 @@ fun CampaignDetails(
         ) {
             Box(
                 Modifier
+                    .clickable { /*TODO*/ }
                     .clip(
                         shape = RoundedCornerShape(
                             topStart = 10.dp,
@@ -235,7 +238,7 @@ fun CampaignDetails(
                 Text(text = "Criada por ${campaign.ngo?.name.toString()}")
             }
         }
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.clip(RoundedCornerShape(12.dp)).fillMaxWidth()) {
             LazyRow {
                 items(images.size) { index ->
                     AsyncImage(
@@ -251,7 +254,7 @@ fun CampaignDetails(
                             .padding(horizontal = 10.dp)
                             .clip(RoundedCornerShape(12.dp)),
                         placeholder = painterResource(id = R.drawable.logo_doe_tempo),
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Fit,
                         onError = { isLoading = false },
                         onSuccess = { isLoading = false},
                     )
@@ -260,7 +263,12 @@ fun CampaignDetails(
         }
         LazyRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             items(causes.size) {index ->
-                val color = randomColor()
+                var color: Color;
+                if (isSystemInDarkTheme()) {
+                    color = randomDarkColor()
+                } else {
+                    color = randomColor()
+                }
                 val contrastColor = Color(color.toArgb() + 200)
                 Box(modifier = Modifier
                     .padding(top = 10.dp, end = 10.dp)
@@ -284,14 +292,25 @@ fun CampaignDetails(
                 style = Typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "${campaign.description}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 5.dp),
-                style = MaterialTheme.typography.body1,
-                color = Color(0xB2000000)
-            )
+            if (isSystemInDarkTheme()) {
+                Text(
+                    text = "${campaign.description}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 5.dp),
+                    style = MaterialTheme.typography.body1,
+                    color = Color(0xFFC7C7CC)
+                )
+            } else {
+                Text(
+                    text = "${campaign.description}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 5.dp),
+                    style = MaterialTheme.typography.body1,
+                    color = Color(0xB2000000)
+                )
+            }
             Text(
                 text = "Detalhes:",
                 Modifier
@@ -312,43 +331,80 @@ fun CampaignDetails(
                     Spacer(modifier = Modifier.width(10.dp))
                     if (campaign.endDate != null && campaign.beginDate != null ) {
                         val expireDate =   Period.between(LocalDate.now() ,convertIsoStringToLocalDate(campaign.endDate.toString()))
-                        if (expireDate.isNegative) {
-                            Text(
-                                text = "Campanha encerrada!",
-                                style = MaterialTheme.typography.body1,
-                                color = Color(0xB2000000)
-                            )
+                        if (isSystemInDarkTheme()) {
+                            if (expireDate.isNegative) {
+                                Text(
+                                    text = "Campanha encerrada!",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color(0xFFC7C7CC)
+                                )
+                            } else {
+                                Text(
+                                    text = "Encerra em ${expireDate.months} mes(es) e ${expireDate.days} dia(s)",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color(0xFFC7C7CC)
+                                )
+                            }
                         } else {
-                            Text(
-                                text = "Encerra em ${expireDate.months} mes(es) e ${expireDate.days} dia(s)",
-                                style = MaterialTheme.typography.body1,
-                                color = Color(0xB2000000)
-                            )
+                            if (expireDate.isNegative) {
+                                Text(
+                                    text = "Campanha encerrada!",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color(0xB2000000)
+                                )
+                            } else {
+                                Text(
+                                    text = "Encerra em ${expireDate.months} mes(es) e ${expireDate.days} dia(s)",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color(0xB2000000)
+                                )
+                            }
                         }
+
                         // Period.between(convertIsoStringToLocalDate(campaign.beginDate.toString()), convertIsoStringToLocalDate(campaign.endDate.toString()))
                     }
                 }
                 Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
                     Icon(painter = painterResource(id = R.drawable.globe_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
                     Spacer(modifier = Modifier.width(10.dp))
-                    if (campaign.homeOffice == true) {
-                        Text(
-                            text = "Pode ser feito à distância",
-                            style = MaterialTheme.typography.body1,
-                            color = Color(0xB2000000))
+                    if (isSystemInDarkTheme()) {
+                        if (campaign.homeOffice == true) {
+                            Text(
+                                text = "Pode ser feito à distância",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xFFC7C7CC))
+                        } else {
+                            Text(text = "Apenas presencial!",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xFFC7C7CC))
+                        }
                     } else {
-                        Text(text = "Apenas presencial!",
-                            style = MaterialTheme.typography.body1,
-                            color = Color(0xB2000000))
+                        if (campaign.homeOffice == true) {
+                            Text(
+                                text = "Pode ser feito à distância",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xB2000000))
+                        } else {
+                            Text(text = "Apenas presencial!",
+                                style = MaterialTheme.typography.body1,
+                                color = Color(0xB2000000))
+                        }
                     }
                 }
                 Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
                     Icon(painter = painterResource(id = R.drawable.map_pin_icon), contentDescription = "icone ilustrativo", Modifier.size(27.dp))
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = "${address.logradouro}, ${campaign.campaignAddress?.address?.number} - ${address.bairro}, ${address.localidade} - ${address.uf}",
-                        style = MaterialTheme.typography.body1,
-                        color = Color(0xB2000000))
+                    if (isSystemInDarkTheme()) {
+                        Text(
+                            text = "${address.logradouro}, ${campaign.campaignAddress?.address?.number} - ${address.bairro}, ${address.localidade} - ${address.uf}",
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xFFC7C7CC))
+                    } else {
+                        Text(
+                            text = "${address.logradouro}, ${campaign.campaignAddress?.address?.number} - ${address.bairro}, ${address.localidade} - ${address.uf}",
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xB2000000))
+                    }
                 }
             }
             Row(
@@ -366,19 +422,33 @@ fun CampaignDetails(
             }
             AnimatedVisibility(visible = editable) {
                 Column(Modifier.fillMaxSize()) {
-                    Text(text = campaign.howToContribute.toString(),
-                        Modifier.padding(start = 5.dp),
-                        style = MaterialTheme.typography.body1,
-                        color = Color(0xB2000000))
+                    if (isSystemInDarkTheme()) {
+                        Text(text = campaign.howToContribute.toString(),
+                            Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xFFC7C7CC))
+                    } else {
+                        Text(text = campaign.howToContribute.toString(),
+                            Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xB2000000))
+                    }
                     Text(
                         text = "Pré-requisitos:",
                         Modifier.padding(top = 5.dp),
                         style = Typography.titleLarge,
                         fontWeight = FontWeight.Bold)
-                    Text(text = campaign.prerequisites.toString(),
-                        Modifier.padding(start = 5.dp),
-                        style = MaterialTheme.typography.body1,
-                        color = Color(0xB2000000))
+                    if (isSystemInDarkTheme()) {
+                        Text(text = campaign.prerequisites.toString(),
+                            Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xFFC7C7CC))
+                    } else {
+                        Text(text = campaign.prerequisites.toString(),
+                            Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.body1,
+                            color = Color(0xB2000000))
+                    }
                 }
             }
         }

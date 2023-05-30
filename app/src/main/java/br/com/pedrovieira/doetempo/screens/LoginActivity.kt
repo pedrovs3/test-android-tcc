@@ -190,6 +190,7 @@ fun Home(token: String) {
                         }
 
                         override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                            Log.i("teste", t.toString())
                             Toast.makeText(context, "Tente novamente mais tarde!", Toast.LENGTH_SHORT).show()
                         }
 

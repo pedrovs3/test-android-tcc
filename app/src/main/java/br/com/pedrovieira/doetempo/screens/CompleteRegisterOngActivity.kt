@@ -134,7 +134,7 @@ fun CompleteRegisterOng(datastore: DataStoreAppData) {
                 value = cnpjState,
                 onValueChange = { cnpjState = it },
                 Modifier.fillMaxWidth(),
-                label = { Text(text = "CPF", color = Color.White) },
+                label = { Text(text = "CNPJ", color = Color.White) },
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     cursorColor = MaterialTheme.colors.onSurface,

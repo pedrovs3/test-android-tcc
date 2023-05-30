@@ -2,6 +2,7 @@ package br.com.pedrovieira.doetempo.screens
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import br.com.pedrovieira.doetempo.components.card_campanha.CardCampaign
 import br.com.pedrovieira.doetempo.datastore.DataStoreAppData
 import br.com.pedrovieira.doetempo.datastore.models.campaign.Campaign
 import br.com.pedrovieira.doetempo.models.UserDetails
+import br.com.pedrovieira.doetempo.models.responses.NgoDetailsResponse
 import br.com.pedrovieira.doetempo.ui.theme.DoeTempoTheme
 import coil.compose.AsyncImage
 import coil.imageLoader
@@ -45,7 +47,11 @@ import coil.util.DebugLogger
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeCampaigns(campaigns: List<Campaign>, user: UserDetails?) {
+fun HomeCampaigns(
+    campaigns: List<Campaign>,
+    user: UserDetails?,
+    ngoDetails: NgoDetailsResponse?
+) {
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -53,19 +59,19 @@ fun HomeCampaigns(campaigns: List<Campaign>, user: UserDetails?) {
     var nameUser by remember {
         mutableStateOf("")
     }
+
+    var typeUser by remember {
+        mutableStateOf("")
+    }
     val context = LocalContext.current
     val dataStore = DataStoreAppData(context = context)
+    typeUser = dataStore.getType.collectAsState(initial = "").value.toString()
     nameUser = dataStore.getName.collectAsState(initial = "").value.toString()
     val namesUserListSplitted = nameUser.split(" ")
 
     if (namesUserListSplitted.size > 2) {
         nameUser = "${namesUserListSplitted[0]} ${namesUserListSplitted[namesUserListSplitted.lastIndex]}"
     }
-
-    val imageLoader = LocalContext.current.imageLoader.newBuilder()
-        .logger(DebugLogger())
-        .build()
-
     Column(
         Modifier
             .fillMaxSize()
@@ -81,32 +87,44 @@ fun HomeCampaigns(campaigns: List<Campaign>, user: UserDetails?) {
                 val intent = Intent(context, PerfilActivity::class.java)
                 context.startActivity(intent)
             }) {
-                AsyncImage(
-                    model = user?.photoURL.toString(),
-                    contentDescription = "Imagem da ong responsavel pela campanha.",
-                    imageLoader = imageLoader,
-                    modifier = Modifier
-                        .size(45.dp, 45.dp)
-                        .clip(RoundedCornerShape(50.dp)),
-                    placeholder = painterResource(id = R.drawable.logo_doe_tempo),
-                    contentScale = ContentScale.Crop,
-                    onError = { isLoading = false },
-                    onSuccess = { isLoading = false},
-                )
+                if (typeUser == "USER") {
+                    AsyncImage(
+                        model = user?.photoURL.toString(),
+                        contentDescription = "Imagem da ong responsavel pela campanha.",
+                        modifier = Modifier
+                            .size(45.dp, 45.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        placeholder = painterResource(id = R.drawable.logo_doe_tempo),
+                        contentScale = ContentScale.Crop,
+                        onError = { isLoading = false },
+                        onSuccess = { isLoading = false},
+                    )
+                } else {
+                    AsyncImage(
+                        model = ngoDetails?.photoURL.toString(),
+                        contentDescription = "Imagem da ong responsavel pela campanha.",
+                        modifier = Modifier
+                            .size(45.dp, 45.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        placeholder = painterResource(id = R.drawable.logo_doe_tempo),
+                        contentScale = ContentScale.Crop,
+                        onError = { isLoading = false },
+                        onSuccess = { isLoading = false},
+                    )
+                }
 //                Icon(imageVector = Icons.Default.Settings, contentDescription = "Button for settings")
             }
         }
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(bottom = 45.dp),
+                .padding(bottom = 40.dp),
         ) {
             LazyColumn(Modifier.fillMaxSize()) {
                 items(campaigns) {
                     CardCampaign(context = context, campaign = it)
                 }
             }
-
         }
     }
 }
@@ -116,6 +134,6 @@ fun HomeCampaigns(campaigns: List<Campaign>, user: UserDetails?) {
 @Composable
 fun DefaultPreview2() {
     DoeTempoTheme {
-        HomeCampaigns(campaigns = listOf(Campaign()), user = UserDetails())
+        HomeCampaigns(campaigns = listOf(Campaign()), user = UserDetails(), ngoDetails = NgoDetailsResponse())
     }
 }

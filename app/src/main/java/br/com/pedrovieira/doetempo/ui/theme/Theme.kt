@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import br.com.pedrovieira.doetempo.screens.ui.theme.Gray800
 
 private val DarkColorPalette = darkColors(
     primary = BlueBerry,
@@ -13,7 +14,7 @@ private val DarkColorPalette = darkColors(
     onSurface = Turquouise_700,
     background = DarkBackground,
     onPrimary = OnDarkBackground,
-    secondaryVariant = MorningBlue
+    secondaryVariant = Gray800
 )
 
 private val LightColorPalette = lightColors(

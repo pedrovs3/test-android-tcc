@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,41 +57,39 @@ fun NewPost(context: Context) {
     var selectedImage by remember {
         mutableStateOf("")
     }
+    var imageToSend by remember {
+        mutableStateOf("")
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
     ) {
         selectedImage = it.toString()
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/${selectedImage.toUri().lastPathSegment}")
+        val uploadTask = storageRef.putFile(selectedImage.toUri())
+        uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            storageRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                imageToSend = task.result.toString()
+            } else {
+                // Handle failures
+                // ...
+            }
+        }
     }
+
     val painter = rememberImagePainter(
         if (selectedImage.isEmpty())
            R.drawable.baseline_preview_24
         else
             selectedImage
     )
-    var imageToSend by remember {
-        mutableStateOf("")
-    }
-
-    val storageRef = FirebaseStorage.getInstance().reference.child("images/${selectedImage.toUri().lastPathSegment}")
-    val uploadTask = storageRef.putFile(selectedImage.toUri())
-    uploadTask.continueWithTask { task ->
-        if (!task.isSuccessful) {
-            task.exception?.let {
-                throw it
-            }
-        }
-        storageRef.downloadUrl
-    }.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            imageToSend = task.result.toString()
-        } else {
-            // Handle failures
-            // ...
-        }
-    }
-
-    Log.i("teste", imageToSend)
-
     var content by remember {
         mutableStateOf("")
     }
@@ -138,11 +137,11 @@ fun NewPost(context: Context) {
                     Icon(painter = painterResource(id = R.drawable.baseline_add_photo_alternate_24), contentDescription = "adicionar foto.")
                 }
                 // Arrumar caso nao selecione imagem TODO
-                if (selectedImage.isNotEmpty()) {
                     Box(modifier = Modifier.clip(RoundedCornerShape(12.dp))) {
-                        Image(painter = painter, contentDescription = "Preview")
+                        if (selectedImage.isNotEmpty() || !selectedImage.isNullOrEmpty()) {
+                            Image(painter = painter, contentDescription = "Preview")
+                        }
                     }
-                }
             }
             Spacer(modifier = Modifier.width(5.dp))
             Button(onClick = {

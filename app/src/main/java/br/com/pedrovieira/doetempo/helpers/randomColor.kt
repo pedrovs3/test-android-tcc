@@ -9,3 +9,10 @@ fun randomColor(): Color {
     val blue = 200 + Random.nextInt(56)
     return Color(red, green, blue)
 }
+
+fun randomDarkColor(): Color {
+    val red = 50 + Random.nextInt(56)
+    val green = 50 + Random.nextInt(56)
+    val blue = 50 + Random.nextInt(56)
+    return Color(red, green, blue)
+}

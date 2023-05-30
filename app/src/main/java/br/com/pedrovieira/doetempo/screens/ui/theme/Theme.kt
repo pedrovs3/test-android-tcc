@@ -1,6 +1,7 @@
 package br.com.pedrovieira.doetempo.screens.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.material3.darkColorScheme
@@ -47,7 +48,7 @@ private val DarkColorPalette = darkColors(
     onSurface = Turquouise_700,
     background = DarkBackground,
     onPrimary = OnDarkBackground,
-    secondaryVariant = br.com.pedrovieira.doetempo.ui.theme.MorningBlue
+    secondaryVariant = Gray800
 )
 
 private val LightColorPalette = lightColors(
@@ -59,8 +60,6 @@ private val LightColorPalette = lightColors(
     secondaryVariant = br.com.pedrovieira.doetempo.ui.theme.MorningBlue,
     onPrimary = OnWhiteBackground
 )
-
-
 @Composable
 fun DoeTempoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
@@ -69,7 +68,7 @@ fun DoeTempoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
         LightColorPalette
     }
 
-    androidx.compose.material.MaterialTheme(
+    MaterialTheme(
         colors = colors,
         typography = br.com.pedrovieira.doetempo.ui.theme.Typography,
         shapes = Shapes,

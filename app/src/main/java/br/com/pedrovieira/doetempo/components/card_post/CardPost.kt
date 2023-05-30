@@ -3,6 +3,7 @@ package br.com.pedrovieira.doetempo.components.card_post
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Colors
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,6 +39,8 @@ import br.com.pedrovieira.doetempo.R
 import br.com.pedrovieira.doetempo.models.NgoPostData
 import br.com.pedrovieira.doetempo.models.Post
 import br.com.pedrovieira.doetempo.models.UserDetails
+import br.com.pedrovieira.doetempo.screens.ui.theme.Gray800
+import br.com.pedrovieira.doetempo.ui.theme.OnWhiteBackground
 import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.util.DebugLogger
@@ -76,11 +81,11 @@ fun CardPost(context: Context, post: Post, user: UserDetails?, ngo: NgoPostData?
         elevation = 0.dp,
         shape = RoundedCornerShape(12.dp)
     ) {
-        Column(Modifier.padding(vertical = 5.dp, horizontal = 5.dp)) {
+        Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp), verticalAlignment = Alignment.Top
+                    .padding(bottom = 10.dp), verticalAlignment = Alignment.Top
             ) {
                 Box(
                     Modifier
@@ -112,22 +117,68 @@ fun CardPost(context: Context, post: Post, user: UserDetails?, ngo: NgoPostData?
                         onSuccess = { isLoading = false },
                     )
                 }
+
                 if (!user?.id.isNullOrEmpty()) {
                     Column(Modifier.fillMaxSize()) {
-                        Text(text = user?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                        Text(text = formattedDateTime.toString(), fontSize = 12.sp)
-                        Text(text = post.content.toString())
+                        if (isSystemInDarkTheme()) {
+                            Text(
+                                text = user?.name.toString(),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = formattedDateTime.toString(),
+                                color = Color.White,
+                                fontSize = 12.sp
+                            )
+                        } else {
+                            Text(
+                                text = user?.name.toString(),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = formattedDateTime.toString(),
+                                fontSize = 12.sp
+                            )
+                        }
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                 } else {
                     Column(Modifier.fillMaxSize()) {
-                        Text(text = ngo?.name.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                        Text(text = formattedDateTime.toString(), fontSize = 12.sp)
-                        Text(text = post.content.toString())
-                        Spacer(modifier = Modifier.height(5.dp))
+                        if (isSystemInDarkTheme()) {
+                            Text(
+                                text = ngo?.name.toString(),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = formattedDateTime.toString(),
+                                color = Color.White,
+                                fontSize = 12.sp
+                            )
+                        } else {
+                            Text(
+                                text = ngo?.name.toString(),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = formattedDateTime.toString(),
+                                fontSize = 12.sp
+                            )
+                        }
                     }
                 }
             }
+            if (isSystemInDarkTheme()) {
+                Text(text = post.content.toString(), color = Color.White)
+            } else {
+                Text(text = post.content.toString())
+            }
+            Spacer(modifier = Modifier.height(5.dp))
             LazyRow {
                 post.postPhoto?.size?.let {
                     items(it) {

@@ -54,9 +54,6 @@ fun CardCampaign(context: Context, campaign: Campaign) {
     var isLoading by remember {
      mutableStateOf(true)
     }
-    val imageLoader = LocalContext.current.imageLoader.newBuilder()
-        .logger(DebugLogger())
-        .build()
 
     imageLink = campaign.ngo?.photoURL.toString()
     Card(onClick = {
@@ -92,7 +89,6 @@ fun CardCampaign(context: Context, campaign: Campaign) {
                         AsyncImage(
                             model = imageLink,
                             contentDescription = "Imagem da ong responsavel pela campanha.",
-                            imageLoader = imageLoader,
                             modifier = Modifier
                                 .size(45.dp, 45.dp)
                                 .clip(RoundedCornerShape(10.dp)),
