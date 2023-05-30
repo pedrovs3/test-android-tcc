@@ -212,8 +212,6 @@ fun Fab(scope: CoroutineScope, scaffoldState: ScaffoldState) {
         onClick = {
             val intent = Intent(context, NewCampaignActivity::class.java)
             context.startActivity(intent)
-            scope.launch { scaffoldState.snackbarHostState
-                .showSnackbar("Ainda indisponivel", actionLabel = "Aceitar", duration = SnackbarDuration.Indefinite) }
         },
         backgroundColor = MaterialTheme.colors.secondaryVariant,
         elevation = FloatingActionButtonDefaults.elevation(0.dp)
